@@ -309,7 +309,7 @@ pub fn load_identity_extras(
         if lower.contains("mobileactivation/mobileactivationd.log") {
             if let Some(bytes) = archive.get(&path) {
                 activation_lock_log_texts
-                    .push(String::from_utf8_lossy(bytes.as_ref()).into_owned());
+                    .push(String::from_utf8_lossy(bytes).into_owned());
             }
             continue;
         }
@@ -320,7 +320,7 @@ pub fn load_identity_extras(
             continue;
         }
         if let Some(bytes) = archive.get(&path) {
-            if let Ok(pv) = plist::from_bytes::<plist::Value>(bytes.as_ref()) {
+            if let Ok(pv) = plist::from_bytes::<plist::Value>(bytes) {
                 if let Ok(jv) = serde_json::to_value(&pv) {
                     identity_plists.insert(path.clone(), jv);
                 }
@@ -348,7 +348,7 @@ pub fn load_mcstate_stubs(archive: &SysdiagnoseArchive) -> std::collections::Has
             }
             stubs.insert(
                 path.clone(),
-                String::from_utf8_lossy(bytes.as_ref()).into_owned(),
+                String::from_utf8_lossy(bytes).into_owned(),
             );
         }
     }

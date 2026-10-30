@@ -342,12 +342,13 @@ pub fn run(parsed: &HashMap<String, Value>) -> Value {
     if trans.get("error").is_some() {
         lines.push("No or invalid transparency.log JSON.".to_string());
     } else if let Some(sm) = trans.get("stateMachine") {
-        if let Some(sv) = sm.get("selfVerification").and_then(|v| v.get("server")) {
-            if let Value::Object(m) = sv {
-                lines.push("Accounts (server):".to_string());
-                for k in m.keys().take(50) {
-                    lines.push(format!("- {k}"));
-                }
+        if let Some(Value::Object(m)) = sm
+            .get("selfVerification")
+            .and_then(|v| v.get("server"))
+        {
+            lines.push("Accounts (server):".to_string());
+            for k in m.keys().take(50) {
+                lines.push(format!("- {k}"));
             }
         }
         let mut contact_uris = BTreeSet::new();

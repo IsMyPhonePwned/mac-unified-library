@@ -924,7 +924,7 @@ pub fn merge_mvt_plist_bundle_signals(
 
 pub fn plist_top_keys(v: &Value) -> Vec<String> {
     match v {
-        Value::Object(m) => m.keys().cloned().take(40).collect(),
+        Value::Object(m) => m.keys().take(40).cloned().collect(),
         _ => vec![],
     }
 }
@@ -956,16 +956,13 @@ pub fn parse_wifi_timestamp(s: &str) -> Option<DateTime<Utc>> {
 /// Top-level keys under a known-networks plist root (drops keys ending in `.plist`).
 pub fn wifi_network_dicts(plist_root: &Value) -> Vec<(String, &Value)> {
     let mut out = Vec::new();
-    match plist_root {
-        Value::Object(m) => {
-            for (k, v) in m {
-                if k.ends_with(".plist") {
-                    continue;
-                }
-                out.push((k.clone(), v));
+    if let Value::Object(m) = plist_root {
+        for (k, v) in m {
+            if k.ends_with(".plist") {
+                continue;
             }
+            out.push((k.clone(), v));
         }
-        _ => {}
     }
     out
 }

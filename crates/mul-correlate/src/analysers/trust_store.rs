@@ -55,7 +55,7 @@ pub fn run(parsed: &HashMap<String, Value>) -> Value {
                 if let Some(rest) = msg.split("Hostname").nth(1) {
                     let h = rest
                         .trim_start_matches(|c: char| !c.is_alphanumeric())
-                        .split(|c: char| c == ',' || c == ' ' || c == '}')
+                        .split([',', ' ', '}'])
                         .next()
                         .unwrap_or("")
                         .trim();

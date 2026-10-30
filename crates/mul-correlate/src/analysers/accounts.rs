@@ -248,15 +248,8 @@ fn walk_contact_uris(v: &Value, out: &mut BTreeSet<String>) {
             }
         }
         Value::Object(m) => {
-            for (k, x) in m {
-                if k.eq_ignore_ascii_case("contacts")
-                    || k.to_ascii_lowercase().contains("uri")
-                    || k.to_ascii_lowercase().contains("contact")
-                {
-                    walk_contact_uris(x, out);
-                } else {
-                    walk_contact_uris(x, out);
-                }
+            for (_k, x) in m {
+                walk_contact_uris(x, out);
             }
         }
         _ => {}

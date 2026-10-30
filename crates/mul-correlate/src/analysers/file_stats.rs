@@ -44,9 +44,9 @@ pub fn run(parsed: &HashMap<String, Value>, ctx: &super::AnalyseCtx) -> Value {
         *ent.1.entry(mime.to_string()).or_insert(0) += 1;
     }
     let mut dir_rows: Vec<Value> = Vec::new();
-    let mut dir_list: Vec<(String, (usize, BTreeMap<String, usize>))> =
-        dir_agg.into_iter().collect();
-    dir_list.sort_by(|a, b| b.1 .0.cmp(&a.1 .0));
+    type DirAgg = (usize, BTreeMap<String, usize>);
+    let mut dir_list: Vec<(String, DirAgg)> = dir_agg.into_iter().collect();
+    dir_list.sort_by_key(|(_, (count, _))| std::cmp::Reverse(*count));
     for (dir_path, (count, mimes)) in dir_list.into_iter().take(100) {
         dir_rows.push(json!({
             "directory": dir_path,

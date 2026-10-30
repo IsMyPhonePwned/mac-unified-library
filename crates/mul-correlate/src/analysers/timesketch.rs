@@ -81,7 +81,7 @@ fn infer_message(obj: &Map<String, Value>) -> Option<String> {
             let pid = obj
                 .get("pid")
                 .map(|v| v.to_string())
-                .unwrap_or_else(|| "".to_string());
+                .unwrap_or_default();
             return Some(format!("{u} pid {pid} {cmd}").trim().to_string());
         }
     }

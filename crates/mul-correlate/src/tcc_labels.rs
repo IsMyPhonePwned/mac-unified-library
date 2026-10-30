@@ -471,8 +471,11 @@ pub fn allowed_from_auth_value(v: &Value) -> Option<String> {
         if lower.contains("prompt") || t == "1" {
             return Some("PROMPT".into());
         }
-        if t.eq_ignore_ascii_case("ALLOWED") || t.eq_ignore_ascii_case("NOT ALLOWED") {
-            return Some(t.to_ascii_uppercase().replace("NOT ALLOWED", "NOT ALLOWED"));
+        if t.eq_ignore_ascii_case("ALLOWED") {
+            return Some("ALLOWED".into());
+        }
+        if t.eq_ignore_ascii_case("NOT ALLOWED") {
+            return Some("NOT ALLOWED".into());
         }
         // Already a display string from Apollo
         if t.contains("ALLOW") || t.contains("DENY") || t.contains("PROMPT") {

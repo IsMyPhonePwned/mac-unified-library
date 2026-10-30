@@ -159,12 +159,7 @@ fn scrape_message_float(message: &str, key: &str) -> Option<f64> {
     let rest = patterns
         .iter()
         .find_map(|needle| message.split(needle.as_str()).nth(1))?;
-    let token = rest
-        .split(',')
-        .next()?
-        .trim()
-        .split_whitespace()
-        .next()?;
+    let token = rest.split(',').next()?.split_whitespace().next()?;
     token.parse().ok()
 }
 
@@ -318,10 +313,7 @@ fn stamp_bundle_id(parser_id: &str, message: &str, data: &mut Map<String, Value>
 
 /// True for values that look like app versions (must contain a digit).
 pub fn looks_like_app_version(value: &str) -> bool {
-    let v = value
-        .trim()
-        .trim_end_matches(|c: char| matches!(c, ',' | ';' | ')' | '>'))
-        .trim();
+    let v = value.trim().trim_end_matches([',', ';', ')', '>']).trim();
     if v.is_empty() || v.len() > 64 {
         return false;
     }
@@ -350,10 +342,7 @@ pub fn parse_mobile_install_versions(message: &str) -> MobileInstallVersions {
             .and_then(|c| c.get(1))
             .map(|m| m.as_str())
             .unwrap_or("");
-        let v = raw
-            .trim()
-            .trim_end_matches(|c: char| matches!(c, ',' | ';' | ')' | '>'))
-            .trim();
+        let v = raw.trim().trim_end_matches([',', ';', ')', '>']).trim();
         if looks_like_app_version(v) {
             Some(v.to_string())
         } else {

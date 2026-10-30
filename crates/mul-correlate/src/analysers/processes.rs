@@ -368,14 +368,12 @@ fn backfill_args_by_path(by_key: &mut BTreeMap<String, Map<String, Value>>) {
                 .unwrap_or_else(|| path.clone());
             let full = format!("{exe} {args}");
             merge_longer_command(row, &full);
-            if !row.contains_key("command_line") {
-                row.insert("command_line".to_string(), json!(full));
-            } else if row
+            let replace = row
                 .get("command_line")
                 .and_then(|v| v.as_str())
                 .map(|s| s.len() < full.len())
-                .unwrap_or(true)
-            {
+                .unwrap_or(true);
+            if replace {
                 row.insert("command_line".to_string(), json!(full));
             }
         }
@@ -473,7 +471,7 @@ pub fn run(parsed: &HashMap<String, Value>) -> Value {
     if !value_looks_like_hard_error(&u2p) {
         if let Value::Object(files) = &u2p {
             for (_path, root) in files {
-                for s in uuid2path_strings(&root) {
+                for s in uuid2path_strings(root) {
                     register(&mut by_key, &s, "uuid2path", None, Map::new());
                 }
             }

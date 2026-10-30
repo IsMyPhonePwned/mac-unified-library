@@ -642,7 +642,7 @@ pub fn run(parsed: &HashMap<String, Value>, rules_toml: Option<&str>) -> Value {
 
 
 fn looks_like_app_version(value: &str) -> bool {
-    let v = value.trim().trim_end_matches(|c: char| matches!(c, ',' | ';' | ')' | '>')).trim();
+    let v = value.trim().trim_end_matches([',', ';', ')', '>']).trim();
     if v.is_empty() || v.len() > 64 || !v.chars().any(|c| c.is_ascii_digit()) {
         return false;
     }
@@ -661,10 +661,7 @@ fn parse_mobile_install_versions(message: &str) -> MobileInstallVersions {
             .and_then(|c| c.get(1))
             .map(|m| m.as_str())
             .unwrap_or("");
-        let v = raw
-            .trim()
-            .trim_end_matches(|c: char| matches!(c, ',' | ';' | ')' | '>'))
-            .trim();
+        let v = raw.trim().trim_end_matches([',', ';', ')', '>']).trim();
         if looks_like_app_version(v) {
             Some(v.to_string())
         } else {
