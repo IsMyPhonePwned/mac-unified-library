@@ -1,0 +1,86 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "locationd_cacheencryptedAB_ltecelllocationharvest.txt"
+
+id = "locationd_cacheencryptedAB_ltecelllocationharvest"
+name = "locationd_cacheencryptedAB_ltecelllocationharvest"
+activity = "Cellular Location"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Locationd LTE Cell Location Harvest"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedB.db,cache_encryptedA.db"]
+path_globs = ["**/cache_encryptedB.db,cache_encryptedA.db", "**/cache_encryptedB.db,cache_encryptedA.db-wal", "**/Archives/cache_encryptedB.db,cache_encryptedA.db.gz", "**/Archives/cache_encryptedB.db,cache_encryptedA.db"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP", 
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		MCC AS "MCC",
+		MNC AS "MNC",
+		TAC AS  "TAC",
+		CI AS "CI",
+		PID AS "PID",
+		BANDINFO AS "BAND INFO",
+		UARFCN AS "UARFCN",
+		CONFIDENCE AS "CONFIDENCE",
+		BUNDLEID AS "BUNDLE ID",
+		RSCP AS "RSCP",
+		ECN0 AS "ECN0",
+		RSSI AS "RSSI",
+		CELLLATITUDE AS "CELL LATITUTDE",
+		CELLLONGITUDE AS "CELL LONGITUDE",
+		OPERATOR AS "OPERATOR",
+		ALTITUDE AS "ALTITUDE",
+		MOTIONACTIVITYTYPE AS "MOTION ACTIVITY TYPE",
+		MOTIONACTIVITYCONFIDENCE AS "MOTION ACTIVITY CONFIDENCE",
+		MOTIONVEHICLECONNECTEDSTATECHANGED AS "MOTION VEHICLE CONNECTED STATE CHANGED",
+		MOTIONVEHICLECONNECTED AS "MOTION VEHICLE CONNECTED",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE"
+	FROM LTECELLLOCATIONHARVEST
+'''
+[variant.requires]
+tables = ["LTECELLLOCATIONHARVEST"]
+
+[[variant]]
+label = "legacy-8"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP", 
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		MCC AS "MCC",
+		MNC AS "MNC",
+		TAC AS  "TAC",
+		CI AS "CI",
+		PID AS "PID",
+		BANDINFO AS "BAND INFO",
+		UARFCN AS "UARFCN",
+		CONFIDENCE AS "CONFIDENCE",
+		BUNDLEID AS "BUNDLE ID",
+		RSCP AS "RSCP",
+		ECN0 AS "ECN0",
+		RSSI AS "RSSI",
+		CELLLATITUDE AS "CELL LATITUTDE",
+		CELLLONGITUDE AS "CELL LONGITUDE",
+		OPERATOR AS "OPERATOR",
+		ALTITUDE AS "ALTITUDE",
+		MOTIONACTIVITYTYPE AS "MOTION ACTIVITY TYPE",
+		MOTIONACTIVITYCONFIDENCE AS "MOTION ACTIVITY CONFIDENCE",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE"
+	FROM LTECELLLOCATIONHARVEST
+'''
+[variant.requires]
+tables = ["LTECELLLOCATIONHARVEST"]

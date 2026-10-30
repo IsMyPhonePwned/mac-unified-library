@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "locationd_cacheencryptedAB_celllocation.txt"
+
+id = "locationd_cacheencryptedAB_celllocation"
+name = "locationd_cacheencryptedAB_celllocation"
+activity = "Cellular Location"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Locationd Cell Location"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db"]
+path_globs = ["**/cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db", "**/cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db-wal", "**/Archives/cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db.gz", "**/Archives/cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP", 
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		MCC AS "MCC",
+		MNC AS "MNC",
+		LAC AS "LAC",
+		CI AS "CI",
+		UARFCN AS "UARFCN",
+		PSC AS "PSC",
+		ALTITUDE AS "ALTITUDE",
+		SPEED AS "SPEED",
+		COURSE AS "COURSE",
+		CONFIDENCE AS "CONFIDENCE",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE"
+	FROM CELLLOCATION
+'''
+[variant.requires]
+tables = ["CELLLOCATION"]

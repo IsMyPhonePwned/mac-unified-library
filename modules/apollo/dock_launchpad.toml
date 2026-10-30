@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "dock_launchpad.txt"
+
+id = "dock_launchpad"
+name = "dock_launchpad"
+activity = "Dock Launchpad"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Dock Launchpad"
+platforms = ["macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["db"]
+path_globs = ["**/db", "**/db-wal", "**/Archives/db.gz", "**/Archives/db"]
+
+[timestamp]
+column = "modification_date"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.13_10.14_10.15_10.16"
+sql = '''
+SELECT
+		DATETIME(APPS.MODDATE+978307200,'UNIXEPOCH') AS 'MODIFICATION DATE',
+		APPS.TITLE AS 'TITLE',
+		APPS.BUNDLEID AS 'BUNDLE ID',
+		CATEGORIES.UTI AS 'CATEGORY UTI',
+		APPS.STOREID AS 'STORE ID',
+		HEX(APPS.BOOKMARK) AS 'BOOKMARK BLOB (HEX)',
+		APPS.ITEM_ID AS "APPS TABLE ID"
+	FROM APPS
+	LEFT JOIN CATEGORIES ON APPS.CATEGORY_ID == CATEGORIES.ROWID
+'''
+[variant.requires]
+tables = ["APPS", "CATEGORIES"]

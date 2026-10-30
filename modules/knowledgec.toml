@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+id = "knowledgec_app_intents_ng"
+name = "knowledgeC app intents"
+activity = "App Usage"
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["knowledgeC.db"]
+path_globs = ["**/knowledgeC.db"]
+
+[timestamp]
+column = "ZSTARTDATE"
+epoch = "cocoa"
+
+[[variant]]
+label = "ZOBJECT-app"
+sql = """
+SELECT ZSTARTDATE, ZENDDATE, ZVALUESTRING
+FROM ZOBJECT
+WHERE ZSTREAMNAME LIKE '%app%'
+LIMIT 100000
+"""
+[variant.requires]
+tables = ["ZOBJECT"]
+columns = [["ZSTARTDATE", "ZSTREAMNAME"]]

@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_wifi_properties.txt"
+
+id = "powerlog_wifi_properties"
+name = "powerlog_wifi_properties"
+activity = "WiFi Connection"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Wi-Fi network connections"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(WIFIPROPERTIES_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		CURRENTSSID,
+		CURRENTCHANNEL,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		WIFIPROPERTIES_ID AS "PLWIFIAGENT_EVENTBACKWARD_CUMULATIVEPROPERTIES TABLE ID" 
+   	FROM
+      (
+		SELECT
+			WIFIPROPERTIES_ID,
+			WIFIPROPERTIES_TIMESTAMP,
+			TIME_OFFSET_TIMESTAMP,
+			MAX(TIME_OFFSET_ID) AS MAX_ID,
+			CURRENTSSID,
+			CURRENTCHANNEL,
+			SYSTEM
+		FROM
+            (
+			SELECT
+				PLWIFIAGENT_EVENTBACKWARD_CUMULATIVEPROPERTIES.TIMESTAMP AS WIFIPROPERTIES_TIMESTAMP,
+				CURRENTSSID,
+				CURRENTCHANNEL,
+				PLWIFIAGENT_EVENTBACKWARD_CUMULATIVEPROPERTIES.ID AS "WIFIPROPERTIES_ID" ,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+			FROM
+				PLWIFIAGENT_EVENTBACKWARD_CUMULATIVEPROPERTIES
+			LEFT JOIN
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET 
+            )
+            AS WIFIPROPERTIES_STATE 
+        GROUP BY
+			WIFIPROPERTIES_ID 
+      )
+'''
+[variant.requires]
+tables = []

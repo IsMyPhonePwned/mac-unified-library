@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_device_volume.txt"
+
+id = "powerlog_device_volume"
+name = "powerlog_device_volume"
+activity = "Device Volume"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Volume Percentage"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(VOLUME_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		VOLUME AS "VOLUME PERCENTAGE",
+		CASE MUTED 
+			WHEN "0" THEN "NO" 
+			WHEN "1" THEN "YES" 
+		END AS "MUTED",
+		DATETIME(VOLUME_TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_VOLUME_TIMESTAMP,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		VOLUME_ID AS "PLAUDIOAGENT_EVENTFORWARD_OUTPUT TABLE ID" 
+   	FROM
+      (
+		SELECT
+			VOLUME_ID,
+			VOLUME_TIMESTAMP,
+			TIME_OFFSET_TIMESTAMP,
+			MAX(TIME_OFFSET_ID) AS MAX_ID,
+			VOLUME,
+			MUTED,
+			SYSTEM
+		FROM
+            (
+			SELECT
+				PLAUDIOAGENT_EVENTFORWARD_OUTPUT.TIMESTAMP AS VOLUME_TIMESTAMP,
+				VOLUME,
+				MUTED,
+				PLAUDIOAGENT_EVENTFORWARD_OUTPUT.ID AS "VOLUME_ID" ,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+			FROM
+				PLAUDIOAGENT_EVENTFORWARD_OUTPUT
+			LEFT JOIN
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET
+            )
+            AS VOLUME_STATE 
+        GROUP BY
+			VOLUME_ID 
+      )
+'''
+[variant.requires]
+tables = []

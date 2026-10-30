@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_app_nowplaying.txt"
+
+id = "powerlog_app_nowplaying"
+name = "powerlog_app_nowplaying"
+activity = "App Now Playing"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "What app/service is playing something, or not."
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10_11_12_13_14"
+sql = '''
+SELECT
+      DATETIME(NOWPLAYING_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+      BUNDLEID AS "BUNDLE ID",
+      CASE STATE 
+         WHEN "0" THEN "OFF" 
+         WHEN "1" THEN "ON" 
+      END AS "STATE",
+      DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+      SYSTEM AS TIME_OFFSET,
+      NOWPLAYING_ID AS "PLAUDIOAGENT_EVENTFORWARD_NOWPLAYING TABLE ID" 
+      FROM
+      (
+      SELECT
+         NOWPLAYING_ID,
+         NOWPLAYING_TIMESTAMP,
+         TIME_OFFSET_TIMESTAMP,
+         MAX(TIME_OFFSET_ID) AS MAX_ID,
+         BUNDLEID,
+         STATE,
+         SYSTEM
+      FROM
+            (
+         SELECT
+            PLAUDIOAGENT_EVENTFORWARD_NOWPLAYING.TIMESTAMP AS NOWPLAYING_TIMESTAMP,
+            BUNDLEID,
+            STATE,
+            PLAUDIOAGENT_EVENTFORWARD_NOWPLAYING.ID AS "NOWPLAYING_ID" ,
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+         FROM
+            PLAUDIOAGENT_EVENTFORWARD_NOWPLAYING
+         LEFT JOIN
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET 
+            )
+            AS NOWPLAYING_STATE 
+        GROUP BY
+         NOWPLAYING_ID 
+      )
+'''
+[variant.requires]
+tables = []

@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "routined_cacheencryptedB_location.txt"
+
+id = "routined_cacheencryptedB_location"
+name = "routined_cacheencryptedB_location"
+activity = "Routined Location"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Routined Locations"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedB.db"]
+path_globs = ["**/cache_encryptedB.db", "**/cache_encryptedB.db-wal", "**/Archives/cache_encryptedB.db.gz", "**/Archives/cache_encryptedB.db"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP",
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		ALTITUDE AS "ALTITUDE",
+		SPEED AS "SPEED",
+		COURSE AS "COURSE",
+		CONFIDENCE AS "CONFIDENCE",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE"
+	FROM LOCATION
+'''
+[variant.requires]
+tables = ["LOCATION"]

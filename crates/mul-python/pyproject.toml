@@ -1,0 +1,14 @@
+[build-system]
+requires = ["maturin>=1.4,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "mac-unified"
+version = "0.1.0"
+description = "Python bindings for mac-unified-library"
+requires-python = ">=3.9"
+license = { text = "GPL-3.0-only" }
+
+[tool.maturin]
+manifest-path = "Cargo.toml"
+module-name = "mac_unified"

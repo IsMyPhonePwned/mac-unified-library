@@ -1,0 +1,59 @@
+# --------------------------------------------------------------------------------
+#       Copyright (c) 2018-2020 Sarah Edwards (Station X Labs, LLC,
+#       @iamevltwin, mac4n6.com). All rights reserved.
+#
+#       Adapted for IsMyPhonePwned / sysdiagnose-extractor-library:
+#       - Modern table PLSpringBoardAgent_EventPoint_SBAutoLock
+#       - COALESCE time offset; keep AUTO LOCK TYPE for Screen Unlock State panel
+# --------------------------------------------------------------------------------
+
+[Module Metadata]
+AUTHOR=Sarah Edwards/mac4n6.com/@iamevltwin
+MODULE_NOTES=Records the Auto-Lock timestamp.
+
+[Database Metadata]
+DATABASE=CurrentPowerlog.PLSQL
+PLATFORM=IOS
+VERSIONS=9,10,11,12,13,14,15,16,17,18,19
+
+[Query Metadata]
+QUERY_NAME=powerlog_device_screen_autolock
+ACTIVITY=Screen Unlock State
+KEY_TIMESTAMP=ADJUSTED_TIMESTAMP
+
+[SQL Query 9,10,11,12,13,14,15,16,17,18,19]
+QUERY=
+	SELECT
+		DATETIME(SBAUTOLOCK_TIMESTAMP + COALESCE(SYSTEM, 0), 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		AUTOLOCKTYPE AS "AUTO LOCK TYPE",
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		COALESCE(SYSTEM, 0) AS TIME_OFFSET,
+		SBAUTOLOCK_ID AS "PLSPRINGBOARDAGENT_EVENTPOINT_SBAUTOLOCK TABLE ID"
+	FROM
+	(
+		SELECT
+			SBAUTOLOCK_ID,
+			SBAUTOLOCK_TIMESTAMP,
+			TIME_OFFSET_TIMESTAMP,
+			MAX(TIME_OFFSET_ID) AS MAX_ID,
+			AUTOLOCKTYPE,
+			SYSTEM
+		FROM
+		(
+			SELECT
+				AL.TIMESTAMP AS SBAUTOLOCK_TIMESTAMP,
+				AL.AUTOLOCKTYPE AS AUTOLOCKTYPE,
+				AL.ID AS SBAUTOLOCK_ID,
+				TOFF.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+				TOFF.ID AS TIME_OFFSET_ID,
+				TOFF.SYSTEM AS SYSTEM
+			FROM
+				PLSpringBoardAgent_EventPoint_SBAutoLock AS AL
+			LEFT JOIN
+				PLStorageOperator_EventForward_TimeOffset AS TOFF
+				ON 1 = 1
+		)
+		AS SBAUTOLOCK_STATE
+		GROUP BY
+			SBAUTOLOCK_ID
+	)

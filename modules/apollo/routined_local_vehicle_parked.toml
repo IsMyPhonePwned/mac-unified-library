@@ -1,0 +1,67 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "routined_local_vehicle_parked.txt"
+
+id = "routined_local_vehicle_parked"
+name = "routined_local_vehicle_parked"
+activity = "Routined Location - Vehicle Parked"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Parked Vehicle - Last Location"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["Local.sqlite"]
+path_globs = ["**/Local.sqlite", "**/Local.sqlite-wal", "**/Archives/Local.sqlite.gz", "**/Archives/Local.sqlite"]
+
+[timestamp]
+column = "date"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-12_13_14"
+sql = '''
+SELECT
+	   DATETIME(ZRTVEHICLEEVENTMO.ZDATE + 978307200, 'UNIXEPOCH') AS "DATE",
+	   DATETIME(ZRTVEHICLEEVENTMO.ZLOCDATE + 978307200, 'UNIXEPOCH') AS "LOCATION DATE",
+	   ZLOCLATITUDE || ", " || ZLOCLONGITUDE AS "COORDINATES",
+	   ZVEHICLEIDENTIFIER AS "VEHICLE IDENTIFIER",
+	   ZLOCUNCERTAINTY AS "LOCATION UNCERTAINTY",
+	   ZIDENTIFIER AS "IDENTIFIER",
+	   ZLOCATIONQUALITY AS "LOCATION QUALITY",
+	   ZUSERSETLOCATION AS "USER SET LOCATION",
+	   ZUSUALLOCATION AS "USUAL LOCATION",
+	   ZNOTES AS "NOTES",
+	   ZPHOTODATA AS "PHOTO DATA",
+	   ZLOCLATITUDE AS "LATITUDE",
+	   ZLOCLONGITUDE AS "LONGITUDE",
+	   ZRTVEHICLEEVENTMO.Z_PK AS "ZRTLEARNEDVISITMO TABLE ID" 
+	FROM
+	   ZRTVEHICLEEVENTMO
+'''
+[variant.requires]
+tables = []
+
+[[variant]]
+label = "legacy-11"
+sql = '''
+SELECT
+	   DATETIME(ZRTVEHICLEEVENTMO.ZDATE + 978307200, 'UNIXEPOCH') AS "DATE",
+	   DATETIME(ZRTVEHICLEEVENTMO.ZLOCDATE + 978307200, 'UNIXEPOCH') AS "LOCATION DATE",
+	   ZLOCLATITUDE || ", " || ZLOCLONGITUDE AS "COORDINATES",
+	   ZVEHICLEIDENTIFIER AS "VEHICLE IDENTIFIER",
+	   ZLOCUNCERTAINTY AS "LOCATION UNCERTAINTY",
+	   ZIDENTIFIER AS "IDENTIFIER",
+	   ZLOCATIONQUALITY AS "LOCATION QUALITY",
+	   ZUSERSETLOCATION AS "USER SET LOCATION",
+	   ZUSUALLOCATION AS "USUAL LOCATION",
+	   ZNOTES AS "NOTES",
+	   ZGEOMAPITEM AS "GEO MAP ITEM",
+	   ZPHOTODATA AS "PHOTO DATA",
+	   ZLOCLATITUDE AS "LATITUDE",
+	   ZLOCLONGITUDE AS "LONGITUDE",
+	   ZRTVEHICLEEVENTMO.Z_PK AS "ZRTLEARNEDVISITMO TABLE ID" 
+	FROM
+	   ZRTVEHICLEEVENTMO
+'''
+[variant.requires]
+tables = []

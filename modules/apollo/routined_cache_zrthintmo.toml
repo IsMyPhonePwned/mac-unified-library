@@ -1,0 +1,34 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "routined_cache_zrthintmo.txt"
+
+id = "routined_cache_zrthintmo"
+name = "routined_cache_zrthintmo"
+activity = "Routined Location"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Semi-granular Location Data (~1 Week)"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["Cache.sqlite,CoreRoutine.sqlite"]
+path_globs = ["**/Cache.sqlite,CoreRoutine.sqlite", "**/Cache.sqlite,CoreRoutine.sqlite-wal", "**/Archives/Cache.sqlite,CoreRoutine.sqlite.gz", "**/Archives/Cache.sqlite,CoreRoutine.sqlite"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10_11_12_13_14"
+sql = '''
+SELECT
+      DATETIME(ZDATE + 978307200, 'UNIXEPOCH') AS "TIMESTAMP",
+      ZLATITUDE || ", " || ZLONGITUDE AS "COORDINATES",
+      ZSOURCE AS "SOURCE",
+      ZLATITUDE AS "LATITUDE",
+      ZLONGITUDE AS "LONGITUDE",
+      ZRTHINTMO.Z_PK AS "ZRTHINTMO TABLE ID" 
+   FROM
+      ZRTHINTMO
+'''
+[variant.requires]
+tables = []

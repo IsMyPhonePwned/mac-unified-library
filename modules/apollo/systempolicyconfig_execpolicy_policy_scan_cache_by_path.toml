@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "systempolicyconfig_execpolicy_policy_scan_cache_by_path.txt"
+
+id = "systempolicyconfig_execpolicy_policy_scan_cache_by_path"
+name = "systempolicyconfig_execpolicy_policy_scan_cache_by_path"
+activity = "System Policy Configuration - Scan Cache by Path"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "System Policy Configuration - ExecPolicy - Policy Scan Cache by Path"
+platforms = ["macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["ExecPolicy"]
+path_globs = ["**/ExecPolicy", "**/ExecPolicy-wal", "**/Archives/ExecPolicy.gz", "**/Archives/ExecPolicy"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.15_10.16"
+sql = '''
+SELECT 
+		DATETIME(TIMESTAMP,'UNIXEPOCH') AS 'TIMESTAMP',
+		DATETIME(MOD_TIME,'UNIXEPOCH') AS 'MOD TIME',
+		DATETIME(LAST_USED_TIME,'UNIXEPOCH') AS 'LAST USED TIME',
+		DATETIME(REVOCATION_CHECK_TIME,'UNIXEPOCH') AS 'REVOCATION CHECK TIME',
+		MOUNT_POINT AS 'MOUNT POINT',
+		MOUNT_RELATIVE_PATH AS 'MOUNT RELATIVE',
+		FS_TYPE_NAME AS 'FS TYPE NAME',
+		BUNDLE_ID AS 'BUNDLE ID',
+		CDHASH AS 'CDHASH',
+		TEAM_IDENTIFIER AS 'TEAM IDENTIFIER',
+		SIGNING_IDENTIFIER AS 'SIGNING_IDENTIFIER',
+		POLICY_MATCH AS 'POLICY MATCH',
+		MALWARE_RESULT AS 'MALWARE RESULT',
+		FLAGS AS 'FLAGS'
+	FROM POLICY_SCAN_CACHE_BY_PATH
+'''
+[variant.requires]
+tables = ["POLICY_SCAN_CACHE_BY_PATH"]

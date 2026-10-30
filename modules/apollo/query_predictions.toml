@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "query_predictions.txt"
+
+id = "query_predictions.db"
+name = "query_predictions.db"
+activity = "Chat"
+author = "AlexisBrignoni/abrignoni.com/@alexisbrignoni"
+notes = "Query_predictions.db"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["query_predictions.db"]
+path_globs = ["**/query_predictions.db", "**/query_predictions.db-wal", "**/Archives/query_predictions.db.gz", "**/Archives/query_predictions.db"]
+
+[timestamp]
+column = "start"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9_10_11_12_13"
+sql = '''
+SELECT 
+		CONTENT,
+		ISSENT,
+		CONVERSATIONID,
+		ID,
+		UUID,
+		DATETIME(CREATIONTIMESTAMP, "UNIXEPOCH") AS START
+	FROM MESSAGES
+'''
+[variant.requires]
+tables = ["MESSAGES"]

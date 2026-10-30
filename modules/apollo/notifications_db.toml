@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "notifications_db.txt"
+
+id = "notifications"
+name = "notifications"
+activity = "Notification"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "App Notifications (Under /db2/)"
+platforms = ["macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["db"]
+path_globs = ["**/db", "**/db-wal", "**/Archives/db.gz", "**/Archives/db"]
+
+[timestamp]
+column = "date_delivered"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.14_10.15_10.16"
+sql = '''
+SELECT 
+		DATETIME(RECORD.DELIVERED_DATE+978307200,'UNIXEPOCH') AS 'DATE DELIVERED',
+		APP.IDENTIFIER AS 'BUNDLE ID',
+		APP.BADGE AS 'APP BADGE',
+		RECORD.PRESENTED AS 'PRESENTED',
+		RECORD.STYLE AS 'STYLE',
+		RECORD.SNOOZE_FIRE_DATE AS 'SNOOZE FIRE DATE',
+		HEX(RECORD.DATA) AS 'NOTIFICATION DATA (HEX)',
+		HEX(CATEGORIES.CATEGORIES) AS 'CATEGORIES (HEX)',
+		RECORD.REQUEST_DATE AS 'REQUEST DATE',
+		RECORD.REQUEST_LAST_DATE AS 'REQUEST LAST DATE',
+		HEX(RECORD.UUID) AS 'UUID (HEX)',
+		RECORD.REC_ID AS "RECORD TABLE ID"
+	FROM RECORD
+	LEFT JOIN APP ON APP.APP_ID == RECORD.APP_ID
+	LEFT JOIN CATEGORIES ON CATEGORIES.APP_ID == RECORD.APP_ID
+'''
+[variant.requires]
+tables = ["RECORD", "APP", "CATEGORIES"]
+
+[[variant]]
+label = "legacy-10.13"
+sql = '''
+SELECT 
+		DATETIME(RECORD.DELIVERED_DATE+978307200,'UNIXEPOCH') AS 'DATE DELIVERED',
+		APP.IDENTIFIER AS 'BUNDLE ID',
+		RECORD.PRESENTED AS 'PRESENTED',
+		RECORD.STYLE AS 'STYLE',
+		RECORD.SNOOZE_FIRE_DATE AS 'SNOOZE FIRE DATE',
+		HEX(RECORD.DATA) AS 'NOTIFICATION DATA (HEX)',
+		RECORD.REQUEST_DATE AS 'REQUEST DATE',
+		RECORD.REQUEST_LAST_DATE AS 'REQUEST LAST DATE',
+		HEX(RECORD.UUID) AS 'UUID (HEX)',
+		RECORD.REC_ID AS "RECORD TABLE ID"
+	FROM RECORD
+	LEFT JOIN APP ON APP.APP_ID == RECORD.APP_ID
+'''
+[variant.requires]
+tables = ["RECORD", "APP"]

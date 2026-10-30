@@ -1,0 +1,28 @@
+# Configurable install / sideload correlation rules for `install_enrichment`.
+# Override via `mul analyse --install-rules PATH` or Session install_enrichment_rules_toml.
+
+window_minutes = 30
+
+[[rules]]
+id = "ipa"
+kind = "ipa"
+label = "IPA"
+match_pattern = '(?i)\.ipa\b'
+name_patterns = [
+  { pattern = '(?i)([\w.-]+\.ipa)\b', name = "$1" },
+]
+
+[[rules]]
+id = "sideload_tool"
+kind = "sideload_tool"
+label = "Sideload tool"
+match_pattern = '(?i)troll\s*store|trolldecrypt|com\.fiore\.trolldecrypt|alt\s*store|sideloadly|\bscarlet\b|\besign\b|\bfeather\b'
+name_patterns = [
+  { pattern = '(?i)trolldecrypt|com\.fiore\.trolldecrypt', name = "TrollDecrypt" },
+  { pattern = '(?i)troll\s*store', name = "TrollStore" },
+  { pattern = '(?i)alt\s*store', name = "AltStore" },
+  { pattern = '(?i)sideloadly', name = "Sideloadly" },
+  { pattern = '(?i)\bscarlet\b', name = "Scarlet" },
+  { pattern = '(?i)\besign\b', name = "ESign" },
+  { pattern = '(?i)\bfeather\b', name = "Feather" },
+]

@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "netusage_zprocess.txt"
+
+id = "netusage_zprocess"
+name = "netusage_zprocess"
+activity = "Network Usage"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Network Usage Processes/Bundle IDs"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["netusage.sqlite"]
+path_globs = ["**/netusage.sqlite", "**/netusage.sqlite-wal", "**/Archives/netusage.sqlite.gz", "**/Archives/netusage.sqlite"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9_10_11_12_13_10.13_10.14_10.15_10.16_14"
+sql = '''
+SELECT
+		DATETIME(ZPROCESS.ZTIMESTAMP+ 978307200, 'unixepoch') AS "TIMESTAMP",
+		DATETIME(ZPROCESS.ZFIRSTTIMESTAMP + 978307200, 'unixepoch') AS "PROCESS FIRST TIMESTAMP",
+		ZPROCESS.ZPROCNAME AS "PROCESS NAME",
+		ZPROCESS.ZBUNDLENAME AS "BUNDLE ID",
+		ZPROCESS.Z_PK AS "ZPROCESS TABLE ID" 
+	FROM ZPROCESS
+'''
+[variant.requires]
+tables = ["ZPROCESS"]

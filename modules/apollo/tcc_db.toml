@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "tcc_db.txt"
+
+id = "tcc_db"
+name = "tcc_db"
+activity = "App Permissions"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Transparancy, Consent, and Control (TCC) Database - Application Permissions"
+platforms = ["macos", "ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["TCC.db"]
+path_globs = ["**/TCC.db", "**/TCC.db-wal", "**/Archives/TCC.db.gz", "**/Archives/TCC.db"]
+
+[timestamp]
+column = "last_modified"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-14_10.16_14"
+sql = '''
+SELECT 
+		DATETIME(LAST_MODIFIED,'UNIXEPOCH') AS "LAST MODIFIED",
+		SERVICE AS 'SERVICE',
+		CLIENT AS 'CLIENT',
+		CASE AUTH_VALUE 
+			WHEN 0 THEN 'NOT ALLOWED'
+			WHEN 2 THEN 'ALLOWED'
+		END AS 'ALLOWED',
+		AUTH_REASON AS 'AUTH REASON',
+		CLIENT_TYPE AS 'CLIENT TYPE',
+		INDIRECT_OBJECT_IDENTIFIER AS 'INDIRECT OBJECT IDENTIFIER'
+	FROM ACCESS
+'''
+[variant.requires]
+tables = ["ACCESS"]
+
+[[variant]]
+label = "legacy-12_13_10.14_10.15"
+sql = '''
+SELECT 
+		DATETIME(LAST_MODIFIED,'UNIXEPOCH') AS "LAST MODIFIED",
+		SERVICE AS 'SERVICE',
+		CLIENT AS 'CLIENT',
+		CASE ALLOWED 
+			WHEN 0 THEN 'NOT ALLOWED'
+			WHEN 1 THEN 'ALLOWED'
+		END AS 'ALLOWED',
+		CLIENT_TYPE AS 'CLIENT TYPE',
+		PROMPT_COUNT AS 'PROMPT COUNT',
+		INDIRECT_OBJECT_IDENTIFIER AS 'INDIRECT OBJECT IDENTIFIER'
+	FROM ACCESS
+'''
+[variant.requires]
+tables = ["ACCESS"]

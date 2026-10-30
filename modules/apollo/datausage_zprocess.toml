@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "datausage_zprocess.txt"
+
+id = "datausage_zprocess"
+name = "datausage_zprocess"
+activity = "Data Usage"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Data Usage Processes/Bundle IDs."
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["DataUsage.sqlite,DataUsage-watch.sqlite"]
+path_globs = ["**/DataUsage.sqlite,DataUsage-watch.sqlite", "**/DataUsage.sqlite,DataUsage-watch.sqlite-wal", "**/Archives/DataUsage.sqlite,DataUsage-watch.sqlite.gz", "**/Archives/DataUsage.sqlite,DataUsage-watch.sqlite"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(ZPROCESS.ZTIMESTAMP+ 978307200, 'UNIXEPOCH') AS "TIMESTAMP",
+		DATETIME(ZPROCESS.ZFIRSTTIMESTAMP + 978307200, 'UNIXEPOCH') AS "PROCESS FIRST TIMESTAMP",
+		ZPROCESS.ZPROCNAME AS "PROCESS NAME",
+		ZPROCESS.ZBUNDLENAME AS "BUNDLE ID",
+		ZPROCESS.Z_PK AS "ZPROCESS TABLE ID" 
+	FROM ZPROCESS
+'''
+[variant.requires]
+tables = ["ZPROCESS"]

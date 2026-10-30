@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "knowledge_family_prediction.txt"
+
+id = "knowledge_family_prediction"
+name = "knowledge_family_prediction"
+activity = "Family Prediction"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Family Prediction"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["knowledgeC.db"]
+path_globs = ["**/knowledgeC.db", "**/knowledgeC.db-wal", "**/Archives/knowledgeC.db.gz", "**/Archives/knowledgeC.db"]
+
+[timestamp]
+column = "start"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-14"
+sql = '''
+SELECT
+      DATETIME(ZOBJECT.ZSTARTDATE+978307200,'UNIXEPOCH') AS "START", 
+      ZOBJECT.ZVALUESTRING AS "VALUE", 
+    HEX(ZSTRUCTUREDMETADATA.Z_DKFAMILYPREDICTIONMETADATAKEY__SUGGESTIONS) AS "SUGGESTIONS(HEX)",
+      CASE ZOBJECT.ZSTARTDAYOFWEEK 
+         WHEN "1" THEN "Sunday"
+         WHEN "2" THEN "Monday"
+         WHEN "3" THEN "Tuesday"
+         WHEN "4" THEN "Wednesday"
+         WHEN "5" THEN "Thursday"
+         WHEN "6" THEN "Friday"
+         WHEN "7" THEN "Saturday"
+      END "DAY OF WEEK",
+      ZOBJECT.ZSECONDSFROMGMT/3600 AS "GMT OFFSET",
+      DATETIME(ZOBJECT.ZCREATIONDATE+978307200,'UNIXEPOCH') AS "ENTRY CREATION", 
+      ZOBJECT.ZUUID AS "UUID",
+    ZOBJECT.Z_PK AS "ZOBJECT TABLE ID" 
+  FROM ZOBJECT
+        LEFT JOIN
+         ZSTRUCTUREDMETADATA 
+         ON ZOBJECT.ZSTRUCTUREDMETADATA = ZSTRUCTUREDMETADATA.Z_PK 
+   WHERE
+      ZSTREAMNAME = "/family/prediction"
+'''
+[variant.requires]
+tables = ["ZOBJECT"]

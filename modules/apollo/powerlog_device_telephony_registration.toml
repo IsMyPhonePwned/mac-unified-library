@@ -1,0 +1,105 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_device_telephony_registration.txt"
+
+id = "powerlog_device_telephony_registration"
+name = "powerlog_device_telephony_registration"
+activity = "Telephony Registration"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Records telephony registration details such AS carrier and service."
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-15_16_17_18"
+sql = '''
+SELECT
+        DATETIME(timestamp, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+        cellId AS "CELL ID",
+        dataInd AS "SERVICE",
+        operator AS "OPERATOR",
+        status AS "STATUS",
+        dataActive AS "DATA ACTIVE",
+        dataAttached AS "DATA ATTACHED",
+        home AS "HOME",
+        lac AS "LAC",
+        subsId AS "SUBSCRIPTION ID",
+        ID AS "BASEBANDMETRICS_TELEPHONYREGISTRATION TABLE ID"
+    FROM
+        BasebandMetrics_TelephonyRegistration_1_2
+    WHERE
+        cellId IS NOT NULL AND cellId > 0
+    ORDER BY
+        timestamp DESC
+'''
+[variant.requires]
+tables = []
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(TELEPHONYREG_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		DATAIND AS "SERVICE",
+		OPERATOR AS "OPERATOR",
+		STATUS AS "STATUS",
+		CELLID AS "CELL ID",
+		DATAACTIVE AS "DATA ACTIVE",
+		DATAATTACHED AS "DATA ATTACHED",
+		HOME AS "HOME",
+		LAC AS "LAC",
+		DATETIME(TELEPHONYREG_TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_TELEPHONYREG_TIMESTAMP,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		TELEPHONYREG_ID AS "PLBBAGENT_EVENTFORWARD_TELEPHONYREGISTRATION TABLE ID" 
+   	FROM
+      (
+		SELECT
+			TELEPHONYREG_ID,
+			TELEPHONYREG_TIMESTAMP,
+			TIME_OFFSET_TIMESTAMP,
+			MAX(TIME_OFFSET_ID) AS MAX_ID,
+			DATAIND,
+			OPERATOR,
+			STATUS,
+			CELLID,
+			DATAACTIVE,
+			DATAATTACHED,
+			HOME,
+			LAC,
+			SYSTEM
+		FROM
+            (
+			SELECT
+				PLBBAGENT_EVENTFORWARD_TELEPHONYREGISTRATION.TIMESTAMP AS TELEPHONYREG_TIMESTAMP,
+				DATAIND,
+				OPERATOR,
+				STATUS,
+				CELLID,
+				DATAACTIVE,
+				DATAATTACHED,
+				HOME,
+				LAC,
+				PLBBAGENT_EVENTFORWARD_TELEPHONYREGISTRATION.ID AS "TELEPHONYREG_ID" ,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+			FROM
+				PLBBAGENT_EVENTFORWARD_TELEPHONYREGISTRATION
+			LEFT JOIN
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET
+            )
+            AS TELEPHONYREG_STATE 
+        GROUP BY
+			TELEPHONYREG_ID 
+      )
+'''
+[variant.requires]
+tables = []

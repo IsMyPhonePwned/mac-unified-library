@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "locationd_cacheencryptedC_motionstatehistory.txt"
+
+id = "locationd_cacheencryptedC_motionstatehistory"
+name = "locationd_cacheencryptedC_motionstatehistory"
+activity = "Motion State History"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Locationd Motion State History"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedC.db"]
+path_globs = ["**/cache_encryptedC.db", "**/cache_encryptedC.db-wal", "**/Archives/cache_encryptedC.db.gz", "**/Archives/cache_encryptedC.db"]
+
+[timestamp]
+column = "start_time"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-11_12_13_14"
+sql = '''
+SELECT 
+		DATETIME(STARTTIME + 978307200, 'UNIXEPOCH') AS "START TIME",
+		TIMESTAMP AS "TIMESTAMP",
+		TYPE AS "TYPE",
+		CONFIDENCE AS "CONFIDENCE",
+		MOUNTED AS "MOUNTED",
+		MOUNTEDCONFIDENCE AS "MOUNTED CONFIDENCE",
+		TURN AS "TURN",
+		ISVEHICULAR AS "IS VEHICULAR",
+		ISMOVING AS "IS MOVING",
+		VEHICLEEXITSTATE AS "VEHICLE EXIT STATE",
+		VEHICULARFLAGSDATA AS "VEHICULAR FLAGS DATA",
+		MOTIONSTATEHISTORY.ID AS "MOTIONSTATEHISTORY TABLE ID"
+	FROM MOTIONSTATEHISTORY
+'''
+[variant.requires]
+tables = ["MOTIONSTATEHISTORY"]
+
+[[variant]]
+label = "legacy-9_10"
+sql = '''
+SELECT 
+		DATETIME(STARTTIME + 978307200, 'UNIXEPOCH') AS "START TIME",
+		TIMESTAMP AS "TIMESTAMP",
+		TYPE AS "TYPE",
+		CONFIDENCE AS "CONFIDENCE",
+		MOUNTED AS "MOUNTED",
+		MOUNTEDCONFIDENCE AS "MOUNTED CONFIDENCE",
+		TURN AS "TURN",
+		ISVEHICULAR AS "IS VEHICULAR",
+		ISMOVING AS "IS MOVING",
+		VEHICLEEXITSTATE AS "VEHICLE EXIT STATE",
+		MOTIONSTATEHISTORY.ID AS "MOTIONSTATEHISTORY TABLE ID"
+	FROM MOTIONSTATEHISTORY
+'''
+[variant.requires]
+tables = ["MOTIONSTATEHISTORY"]

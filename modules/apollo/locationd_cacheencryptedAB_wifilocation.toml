@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "locationd_cacheencryptedAB_wifilocation.txt"
+
+id = "locationd_cacheencryptedAB_wifilocation"
+name = "locationd_cacheencryptedAB_wifilocation"
+activity = "WiFi Location"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Locationd Wi-Fi Location"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db"]
+path_globs = ["**/cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db", "**/cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db-wal", "**/Archives/cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db.gz", "**/Archives/cache_encryptedB.db,cache_encryptedA.db,lockCache_encryptedA.db"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9_10_11_12_13_10.13_10.14_10.15_10.16_14"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP",
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		MAC AS "MAC",
+		CHANNEL AS "CHANNEL",
+		INFOMASK AS "INFOMASK",
+		SPEED AS "SPEED",
+		COURSE AS "COURSE",
+		CONFIDENCE AS "CONFIDENCE",
+		SCORE AS "SCORE",
+		REACH AS "REACH",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE"
+	FROM WIFILOCATION
+'''
+[variant.requires]
+tables = ["WIFILOCATION"]

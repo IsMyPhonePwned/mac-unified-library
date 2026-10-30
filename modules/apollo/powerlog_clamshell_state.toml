@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_clamshell_state.txt"
+
+id = "powerlog_clamshell_state"
+name = "powerlog_clamshell_state"
+activity = "Clamshell State"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Laptop Open/Close"
+platforms = ["macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.15_10.16"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		CASE CLOSED 
+			WHEN 0 THEN "OPEN"
+			WHEN 1 THEN "CLOSED"
+		END 'CLOSED',
+		DATETIME(TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_TIMESTAMP,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		TABLE_ID AS "PLPERIPHERALAGENT_EVENTFORWARD_CLAMSHELLSTATE TABLE ID"
+	FROM
+	(
+	SELECT
+		TABLE_ID,
+		TIME_OFFSET_TIMESTAMP,
+		MAX(TIME_OFFSET_ID) AS MAX_ID,
+		TIMESTAMP,
+		CLOSED,
+		SYSTEM
+	FROM
+	(
+	SELECT
+		PLPERIPHERALAGENT_EVENTFORWARD_CLAMSHELLSTATE.TIMESTAMP,
+		PLPERIPHERALAGENT_EVENTFORWARD_CLAMSHELLSTATE.CLOSED,
+		PLPERIPHERALAGENT_EVENTFORWARD_CLAMSHELLSTATE.ID AS "TABLE_ID",
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+	FROM
+		PLPERIPHERALAGENT_EVENTFORWARD_CLAMSHELLSTATE 
+	LEFT JOIN
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET 
+	)
+	GROUP BY
+	TABLE_ID 
+         )
+'''
+[variant.requires]
+tables = []

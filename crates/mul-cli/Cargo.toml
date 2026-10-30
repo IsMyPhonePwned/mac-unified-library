@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "mul-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "CLI for mac-unified-library (bin: mul)"
+
+[[bin]]
+name = "mul"
+path = "src/main.rs"
+
+[dependencies]
+mac-unified-library = { workspace = true }
+mul-core = { workspace = true }
+mul-apollo = { workspace = true }
+mul-unifiedlog = { workspace = true }
+mul-export = { workspace = true }
+tracing = { workspace = true }
+clap = { workspace = true }
+serde_json = { workspace = true }
+anyhow = { workspace = true }
+tracing-subscriber = { workspace = true }

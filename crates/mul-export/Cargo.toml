@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "mul-export"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "NDJSON, CSV, Timesketch, report, SQLite, Arrow/Parquet exporters"
+
+[features]
+default = []
+arrow = []
+parquet = []
+sqlite = ["dep:rusqlite"]
+
+[dependencies]
+mul-core = { workspace = true }
+mul-correlate = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+rusqlite = { workspace = true, optional = true }

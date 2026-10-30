@@ -1,0 +1,97 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "knowledge_device_pluggedin.txt"
+
+id = "knowledge_device_pluggedin"
+name = "knowledge_device_pluggedin"
+activity = "Device Plugin Status"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Is the device is plugged in or not."
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["knowledgeC.db"]
+path_globs = ["**/knowledgeC.db", "**/knowledgeC.db-wal", "**/Archives/knowledgeC.db.gz", "**/Archives/knowledgeC.db"]
+
+[timestamp]
+column = "start"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-13_10.15_10.16_14"
+sql = '''
+SELECT
+      DATETIME(ZOBJECT.ZSTARTDATE+978307200,'UNIXEPOCH') AS "START", 
+      DATETIME(ZOBJECT.ZENDDATE+978307200,'UNIXEPOCH') AS "END",
+      CASE ZOBJECT.ZVALUEINTEGER
+         WHEN '0' THEN 'UNPLUGGED' 
+         WHEN '1' THEN 'PLUGGED IN' 
+      END "IS PLUGGED IN",
+      (ZOBJECT.ZENDDATE - ZOBJECT.ZSTARTDATE) AS "USAGE IN SECONDS",
+     (ZOBJECT.ZENDDATE - ZOBJECT.ZSTARTDATE)/60.00 AS "USAGE IN MINUTES",   
+	 ZSTRUCTUREDMETADATA.Z_DKDEVICEISPLUGGEDINMETADATAKEY__ADAPTERTYPE AS "ADAPTER TYPE",
+      CASE ZOBJECT.ZSTARTDAYOFWEEK 
+         WHEN "1" THEN "Sunday"
+         WHEN "2" THEN "Monday"
+         WHEN "3" THEN "Tuesday"
+         WHEN "4" THEN "Wednesday"
+         WHEN "5" THEN "Thursday"
+         WHEN "6" THEN "Friday"
+         WHEN "7" THEN "Saturday"
+      END "DAY OF WEEK",
+      ZOBJECT.ZSECONDSFROMGMT/3600 AS "GMT OFFSET",
+      DATETIME(ZOBJECT.ZCREATIONDATE+978307200,'UNIXEPOCH') AS "ENTRY CREATION",
+      ZOBJECT.ZUUID AS "UUID", 
+		ZSTRUCTUREDMETADATA.ZMETADATAHASH,
+		ZOBJECT.Z_PK AS "ZOBJECT TABLE ID" 
+	FROM ZOBJECT
+	      LEFT JOIN
+         ZSTRUCTUREDMETADATA 
+         ON ZOBJECT.ZSTRUCTUREDMETADATA = ZSTRUCTUREDMETADATA.Z_PK 
+      LEFT JOIN
+         ZSOURCE 
+         ON ZOBJECT.ZSOURCE = ZSOURCE.Z_PK 
+   WHERE
+      ZSTREAMNAME LIKE "/device/isPluggedIn"
+'''
+[variant.requires]
+tables = ["ZOBJECT"]
+
+[[variant]]
+label = "legacy-11_12_10.13_10.14"
+sql = '''
+SELECT
+      DATETIME(ZOBJECT.ZSTARTDATE+978307200,'UNIXEPOCH') AS "START", 
+      DATETIME(ZOBJECT.ZENDDATE+978307200,'UNIXEPOCH') AS "END",
+      CASE ZOBJECT.ZVALUEINTEGER
+         WHEN '0' THEN 'UNPLUGGED' 
+         WHEN '1' THEN 'PLUGGED IN' 
+      END "IS PLUGGED IN",
+      (ZOBJECT.ZENDDATE - ZOBJECT.ZSTARTDATE) AS "USAGE IN SECONDS",
+     (ZOBJECT.ZENDDATE - ZOBJECT.ZSTARTDATE)/60.00 AS "USAGE IN MINUTES",   
+      CASE ZOBJECT.ZSTARTDAYOFWEEK 
+         WHEN "1" THEN "Sunday"
+         WHEN "2" THEN "Monday"
+         WHEN "3" THEN "Tuesday"
+         WHEN "4" THEN "Wednesday"
+         WHEN "5" THEN "Thursday"
+         WHEN "6" THEN "Friday"
+         WHEN "7" THEN "Saturday"
+      END "DAY OF WEEK",
+      ZOBJECT.ZSECONDSFROMGMT/3600 AS "GMT OFFSET",
+      DATETIME(ZOBJECT.ZCREATIONDATE+978307200,'UNIXEPOCH') AS "ENTRY CREATION",
+      ZOBJECT.ZUUID AS "UUID", 
+		ZSTRUCTUREDMETADATA.ZMETADATAHASH,
+		ZOBJECT.Z_PK AS "ZOBJECT TABLE ID" 
+	FROM ZOBJECT
+	      LEFT JOIN
+         ZSTRUCTUREDMETADATA 
+         ON ZOBJECT.ZSTRUCTUREDMETADATA = ZSTRUCTUREDMETADATA.Z_PK 
+      LEFT JOIN
+         ZSOURCE 
+         ON ZOBJECT.ZSOURCE = ZSOURCE.Z_PK 
+   WHERE
+      ZSTREAMNAME LIKE "/device/isPluggedIn"
+'''
+[variant.requires]
+tables = ["ZOBJECT"]

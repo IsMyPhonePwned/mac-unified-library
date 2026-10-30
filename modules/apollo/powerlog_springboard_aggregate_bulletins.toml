@@ -1,0 +1,34 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_springboard_aggregate_bulletins.txt"
+
+id = "powerlog_springboard_aggregate_bulletins"
+name = "powerlog_springboard_aggregate_bulletins"
+activity = "Springboard Aggregate Bulletins"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Springboard Aggregate Bulletins"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10_11_12_13_14"
+sql = '''
+SELECT
+	   DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+	   BULLETINBUNDLEID AS "BULLETIN BUNDLE ID",
+	   TIMEINTERVAL / 60 AS "TIME INTERVAL IN SECONDS",
+	   COUNT AS "COUNT",
+	   POSTTYPE AS "POST TYPE",
+	   ID AS "PLSPRINGBOARDAGENT_AGGREGATE_SBBULLETINS_AGGREGATE TABLE ID" 
+	FROM
+	   PLSPRINGBOARDAGENT_AGGREGATE_SBBULLETINS_AGGREGATE
+'''
+[variant.requires]
+tables = []

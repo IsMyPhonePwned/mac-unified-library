@@ -1,0 +1,77 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "call_history.txt"
+
+id = "call_history"
+name = "call_history"
+activity = "Call History"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Call History"
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["CallHistory.storedata"]
+path_globs = ["**/CallHistory.storedata", "**/CallHistory.storedata-wal", "**/Archives/CallHistory.storedata.gz", "**/Archives/CallHistory.storedata"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(ZDATE+978307200,'UNIXEPOCH') AS "TIMESTAMP",
+		CAST(ZADDRESS AS TEXT) AS "ADDRESS",
+		ZANSWERED AS "WAS ANSWERED", 
+		ZCALLTYPE AS "CALL TYPE", 
+		ZORIGINATED AS "ORIGINATED", 
+		ZDURATION/60.00 AS "DURATION (IN MINUTES)",
+		ZDURATION AS "DURATION (IN SECONDS)",
+		ZISO_COUNTRY_CODE AS "ISO COUNTRY CODE",
+		ZLOCATION AS "LOCATION", 
+		ZSERVICE_PROVIDER AS "SERVICE PROVIDER",
+		ZCALLRECORD.Z_PK AS "ZCALLRECORD TABLE ID"
+	FROM ZCALLRECORD
+'''
+[variant.requires]
+tables = ["ZCALLRECORD"]
+
+[[variant]]
+label = "legacy-10.13_10.14_10.15_10.16"
+sql = '''
+SELECT 
+		DATETIME(ZDATE+978307200,'UNIXEPOCH') AS "TIMESTAMP",
+		ZANSWERED AS "WAS ANSWERED", 
+		ZDISCONNECTED_CAUSE AS "DISCONNECTED  CAUSE",
+		ZCALLTYPE AS "CALL TYPE", 
+		ZORIGINATED AS "ORIGINATED", 
+		ZDURATION/60.00 AS "DURATION (IN MINUTES)",
+		ZDURATION AS "DURATION (IN SECONDS)",
+		ZISO_COUNTRY_CODE AS "ISO COUNTRY CODE",
+		ZLOCATION AS "LOCATION", 
+		ZSERVICE_PROVIDER AS "SERVICE PROVIDER",
+		HEX(CAST(ZADDRESS AS TEXT)) AS "ADDRESS",
+		ZCALLRECORD.Z_PK AS "ZCALLRECORD TABLE ID"
+	FROM ZCALLRECORD
+'''
+[variant.requires]
+tables = ["ZCALLRECORD"]
+
+[[variant]]
+label = "legacy-8"
+sql = '''
+SELECT
+		DATETIME(ZDATE+978307200,'UNIXEPOCH') AS "TIMESTAMP",
+		CAST(ZADDRESS AS TEXT) AS "ADDRESS", 
+		ZANSWERED AS "WAS ANSWERED", 
+		ZCALLTYPE AS "CALL TYPE", 
+		ZORIGINATED AS "ORIGINATED",
+		ZDURATION/60.00 AS "DURATION (IN MINUTES)", 
+		ZDURATION AS "DURATION (IN SECONDS)",
+		ZISO_COUNTRY_CODE AS "ISO COUNTRY CODE",
+		ZCALLRECORD.Z_PK AS "ZCALLRECORD TABLE ID"
+	FROM ZCALLRECORD
+'''
+[variant.requires]
+tables = ["ZCALLRECORD"]

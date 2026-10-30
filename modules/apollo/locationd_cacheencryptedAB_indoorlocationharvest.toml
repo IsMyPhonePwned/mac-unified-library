@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "locationd_cacheencryptedAB_indoorlocationharvest.txt"
+
+id = "locationd_cacheencryptedAB_indoorlocationharvest"
+name = "locationd_cacheencryptedAB_indoorlocationharvest"
+activity = "Indoor Location Harvest"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Locationd Indoor Location Harvest"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedB.db,cache_encryptedA.db"]
+path_globs = ["**/cache_encryptedB.db,cache_encryptedA.db", "**/cache_encryptedB.db,cache_encryptedA.db-wal", "**/Archives/cache_encryptedB.db,cache_encryptedA.db.gz", "**/Archives/cache_encryptedB.db,cache_encryptedA.db"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP", 
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		PROVIDER AS "PROVIDER",
+		FLOOR AS  "FLOOR",
+		CONFIDENCE AS "CONFIDENCE",
+		BUNDLEID AS "BUNDLE ID",
+		ALTITUDE AS "ALTITUDE",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE"
+	FROM INDOORLOCATIONHARVEST
+'''
+[variant.requires]
+tables = ["INDOORLOCATIONHARVEST"]
+
+[[variant]]
+label = "legacy-8"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP", 
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		CONFIDENCE AS "CONFIDENCE",
+		BUNDLEID AS "BUNDLE ID",
+		ALTITUDE AS "ALTITUDE",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE"
+	FROM INDOORLOCATIONHARVEST
+'''
+[variant.requires]
+tables = ["INDOORLOCATIONHARVEST"]

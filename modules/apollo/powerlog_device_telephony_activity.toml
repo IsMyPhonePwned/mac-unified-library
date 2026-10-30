@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_device_telephony_activity.txt"
+
+id = "powerlog_device_telephony_activity"
+name = "powerlog_device_telephony_activity"
+activity = "Telephony Activity"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Telephony Activity"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-15_16_17_18"
+sql = '''
+SELECT
+        DATETIME(timestamp, 'UNIXEPOCH') AS TIMESTAMP,
+        airplaneMode AS "AIRPLANE MODE",
+        callStatus AS "CALL STATUS",
+        signalBars AS "SIGNAL BARS",
+        signalStrength AS "SIGNAL STRENGTH",
+        campedRat AS "CAMPED RAT",
+        currentRat AS "CURRENT RAT",
+        preferredRat AS "PREFERRED RAT",
+        activeBand AS "ACTIVE BAND",
+        dataStatus AS "DATA STATUS",
+        simStatus AS "SIM STATUS",
+        subsId AS "SUBSCRIPTION ID",
+        ID AS "BASEBANDMETRICS_TELEPHONYACTIVITY TABLE ID"
+    FROM
+        BasebandMetrics_TelephonyActivity_1_2
+    ORDER BY
+        timestamp DESC
+'''
+[variant.requires]
+tables = []
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+      DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+      AIRPLANEMODE AS "AIRPLANE MODE",
+      CALLSTATUS AS "CALL STATUS",
+      SIGNALBARS AS "SIGNALS BARS",
+      SIGNALSTRENGTH AS "SIGNAL STRENGTH",
+      CAMPEDRAT AS "CAMPED RAT",
+      CURRENTRAT AS "CURRENT RAT",
+      PREFERREDRAT AS "PREFERRED RAT",
+      ACTIVEBAND AS "ACTIVE BAND",
+      DATASTATUS AS "DATA STATUS",
+      SIMSTATUS AS "SIM STATUS",
+      ID AS "PLBBAGENT_EVENTPOINT_TELEPHONYACTIVITY TABLE ID" 
+   FROM
+      PLBBAGENT_EVENTPOINT_TELEPHONYACTIVITY
+'''
+[variant.requires]
+tables = []

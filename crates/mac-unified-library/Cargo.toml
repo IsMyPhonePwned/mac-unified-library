@@ -1,0 +1,44 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "mac-unified-library"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Facade Session API for mac-unified-library"
+
+[features]
+default = ["parallel", "mmap", "sqlite", "ng", "biome"]
+parallel = [
+    "mul-core/parallel",
+    "mul-unifiedlog/parallel",
+    "mul-apollo/parallel",
+    "mul-ingest/parallel",
+    "mul-correlate/parallel",
+]
+mmap = ["mul-io/mmap"]
+sqlite = ["mul-apollo/sqlite"]
+ng = ["mul-ingest/ng"]
+biome = ["mul-apollo/biome"]
+arrow = ["mul-export/arrow"]
+parquet = ["mul-export/parquet"]
+export-sqlite = ["mul-export/sqlite"]
+live = ["mul-ingest/live"]
+wasm = []
+
+[dependencies]
+mul-core = { workspace = true }
+mul-io = { workspace = true }
+mul-unifiedlog = { workspace = true }
+mul-apollo = { workspace = true }
+mul-ingest = { workspace = true }
+mul-correlate = { workspace = true }
+mul-export = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+plist = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }

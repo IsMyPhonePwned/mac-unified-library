@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_wallet_card.txt"
+
+id = "powerlog_wallet_card"
+name = "powerlog_wallet_card"
+activity = "Wallet Card"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Wallet Authorized Status"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(WALLETCARD_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		AUTHORIZEDSTATUS AS "AUTHORIZED STATUS",
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		WALLETCARD_ID AS "PLNFCAGENT_EVENTFORWARD_CARD TABLE ID" 
+   	FROM
+      (
+		SELECT
+			WALLETCARD_ID,
+			WALLETCARD_TIMESTAMP,
+			TIME_OFFSET_TIMESTAMP,
+			MAX(TIME_OFFSET_ID) AS MAX_ID,
+			AUTHORIZEDSTATUS,
+			SYSTEM
+		FROM
+            (
+			SELECT
+				PLNFCAGENT_EVENTFORWARD_CARD.TIMESTAMP AS WALLETCARD_TIMESTAMP,
+				AUTHORIZEDSTATUS,
+				PLNFCAGENT_EVENTFORWARD_CARD.ID AS "WALLETCARD_ID" ,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+			FROM
+				PLNFCAGENT_EVENTFORWARD_CARD
+			LEFT JOIN
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET 
+            )
+            AS WALLETCARD_STATE 
+        GROUP BY
+			WALLETCARD_ID 
+      )
+'''
+[variant.requires]
+tables = []

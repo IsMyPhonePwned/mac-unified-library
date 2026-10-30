@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "systempolicyconfig_execpolicy_policy_old_platform_cache.txt"
+
+id = "systempolicyconfig_execpolicy_policy_old_platform_cache"
+name = "systempolicyconfig_execpolicy_policy_old_platform_cache"
+activity = "System Policy Configuration - Old Platform Cache"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "System Policy Configuration - ExecPolicy - Old Platform Cache"
+platforms = ["macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["ExecPolicy"]
+path_globs = ["**/ExecPolicy", "**/ExecPolicy-wal", "**/Archives/ExecPolicy.gz", "**/Archives/ExecPolicy"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.14_10.15_10.16"
+sql = '''
+SELECT
+		DATETIME(TS,'UNIXEPOCH') AS 'TIMESTAMP',
+		KEY
+	FROM OLD_PLATFORM_CACHE
+'''
+[variant.requires]
+tables = ["OLD_PLATFORM_CACHE"]

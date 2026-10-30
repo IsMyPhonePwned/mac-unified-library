@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_video.txt"
+
+id = "powerlog_video"
+name = "powerlog_video"
+activity = "App Usage Video"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Which app is playing a video."
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_10.15_10.16_14"
+sql = '''
+SELECT
+		DATETIME(VIDEO_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		CLIENTDISPLAYID AS "CLIENT DISPLAY ID",
+		STATE,
+		CLIENTPID AS "CLIENT PID",
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		VIDEO_ID AS "PLVIDEOAGENT_EVENTFORWARD_VIDEO TABLE ID" 
+   	FROM
+      (
+		SELECT
+			VIDEO_ID,
+			VIDEO_TIMESTAMP,
+			TIME_OFFSET_TIMESTAMP,
+			MAX(TIME_OFFSET_ID) AS MAX_ID,
+			CLIENTDISPLAYID,
+			STATE,
+			CLIENTPID,
+			SYSTEM
+		FROM
+            (
+			SELECT
+				PLVIDEOAGENT_EVENTFORWARD_VIDEO.TIMESTAMP AS VIDEO_TIMESTAMP,
+				CLIENTDISPLAYID,
+				STATE,
+				CLIENTPID,
+				PLVIDEOAGENT_EVENTFORWARD_VIDEO.ID AS "VIDEO_ID" ,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+			FROM
+				PLVIDEOAGENT_EVENTFORWARD_VIDEO
+			LEFT JOIN
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET
+            )
+            AS VIDEO_STATE 
+        GROUP BY
+			VIDEO_ID 
+      )
+'''
+[variant.requires]
+tables = []

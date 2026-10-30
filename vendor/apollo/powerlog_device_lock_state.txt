@@ -1,0 +1,65 @@
+# --------------------------------------------------------------------------------
+#       Copyright (c) 2018-2020 Sarah Edwards (Station X Labs, LLC, 
+#       @iamevltwin, mac4n6.com). All rights reserved.
+#
+#       Adapted for IsMyPhonePwned / sysdiagnose-extractor-library:
+#       - Modern table name PLSpringBoardAgent_EventForward_SBLock (iOS 15+)
+#       - COALESCE(SYSTEM, 0) so missing time-offset rows still emit timestamps
+#       - Integer CASE arms (LOCKED is INTEGER in CurrentPowerlog)
+# --------------------------------------------------------------------------------
+
+[Module Metadata]
+AUTHOR=Sarah Edwards/mac4n6.com/@iamevltwin
+MODULE_NOTES=Records when the device is locked or unlocked.
+
+[Database Metadata]
+DATABASE=CurrentPowerlog.PLSQL
+PLATFORM=IOS
+VERSIONS=9,10,11,12,13,14,15,16,17,18,19
+
+[Query Metadata]
+QUERY_NAME=powerlog_device_lock_state
+ACTIVITY=Lock State
+KEY_TIMESTAMP=ADJUSTED_TIMESTAMP
+
+[SQL Query 9,10,11,12,13,14,15,16,17,18,19]
+QUERY=
+	SELECT
+		DATETIME(LOCKSTATE_TIMESTAMP + COALESCE(SYSTEM, 0), 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		CASE CAST(LOCKED AS INTEGER)
+			WHEN 0 THEN 'DEVICE UNLOCKED'
+			WHEN 1 THEN 'DEVICE LOCKED'
+			ELSE 'DEVICE LOCK UNKNOWN'
+		END AS "LOCK STATUS",
+		DATETIME(LOCKSTATE_TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_LOCKSTATE_TIMESTAMP,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		COALESCE(SYSTEM, 0) AS TIME_OFFSET,
+		LOCKSTATE_ID AS "PLSPRINGBOARDAGENT_EVENTFORWARD_SBLOCK TABLE ID"
+	FROM
+	(
+		SELECT
+			LOCKSTATE_ID,
+			LOCKSTATE_TIMESTAMP,
+			TIME_OFFSET_TIMESTAMP,
+			MAX(TIME_OFFSET_ID) AS MAX_ID,
+			LOCKED,
+			SYSTEM
+		FROM
+		(
+			SELECT
+				SB.TIMESTAMP AS LOCKSTATE_TIMESTAMP,
+				SB.LOCKED AS LOCKED,
+				SB.ID AS LOCKSTATE_ID,
+				TOFF.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+				TOFF.ID AS TIME_OFFSET_ID,
+				TOFF.SYSTEM AS SYSTEM
+			FROM
+				PLSpringBoardAgent_EventForward_SBLock AS SB
+			LEFT JOIN
+				PLStorageOperator_EventForward_TimeOffset AS TOFF
+				ON 1 = 1
+		)
+		AS LOCKSTATE_STATE
+		GROUP BY
+			LOCKSTATE_ID
+	)

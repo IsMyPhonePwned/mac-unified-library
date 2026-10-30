@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_display.txt"
+
+id = "powerlog_display"
+name = "powerlog_display"
+activity = "Display"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Display"
+platforms = ["macos", "ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.15_10.16_13_14"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		BLOCK AS 'BLOCK',
+		ACTIVE AS 'ACTIVE',
+		DATETIME(TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_TIMESTAMP,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		TABLE_ID AS "PLDISPLAYAGENT_EVENTPOINT_DISPLAY TABLE ID"
+	FROM
+	(
+	SELECT
+		TABLE_ID,
+		TIMESTAMP,
+		TIME_OFFSET_TIMESTAMP,
+		MAX(TIME_OFFSET_ID) AS MAX_ID,
+		BLOCK,
+		ACTIVE,
+		SYSTEM
+	FROM
+	(
+	SELECT
+		PLDISPLAYAGENT_EVENTPOINT_DISPLAY.TIMESTAMP,
+		PLDISPLAYAGENT_EVENTPOINT_DISPLAY.BLOCK,
+		PLDISPLAYAGENT_EVENTPOINT_DISPLAY.ACTIVE,
+		PLDISPLAYAGENT_EVENTPOINT_DISPLAY.ID AS "TABLE_ID",
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+	FROM
+		PLDISPLAYAGENT_EVENTPOINT_DISPLAY 
+	LEFT JOIN
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET 
+	)
+	GROUP BY
+	TABLE_ID 
+         )
+'''
+[variant.requires]
+tables = []

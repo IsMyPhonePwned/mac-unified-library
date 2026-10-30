@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "coreduetdclassd_device_plugin_state.txt"
+
+id = "coreduetdclassd_device_plugin_state"
+name = "coreduetdclassd_device_plugin_state"
+activity = "Plugin State"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Plugin State"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["coreduetdClassD.db"]
+path_globs = ["**/coreduetdClassD.db", "**/coreduetdClassD.db-wal", "**/Archives/coreduetdClassD.db.gz", "**/Archives/coreduetdClassD.db"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9"
+sql = '''
+SELECT 
+		DATETIME(ZCREATIONDATE+978307200,'UNIXEPOCH') AS "TIMESTAMP",
+		TIME(ZCREATIONDATE-ZLOCALTIME,'UNIXEPOCH') AS "TIME ZONE", 
+		CASE ZCABLESTATE
+		    WHEN "0" THEN "UNPLUGGED"
+		    WHEN "1" THEN "PLUGGED IN"
+		END "CABLE STATE"
+	FROM ZCDDMPLUGINEVENT
+'''
+[variant.requires]
+tables = ["ZCDDMPLUGINEVENT"]

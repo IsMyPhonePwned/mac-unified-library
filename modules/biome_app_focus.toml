@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+id = "biome_app_focus"
+name = "Biome App.InFocus"
+activity = "App Focus"
+platforms = ["ios"]
+
+[source]
+kind = "segb"
+stream_globs = ["**/App.InFocus/**", "**/app.infocus/**"]
+
+[timestamp]
+field = "time_cocoa"
+epoch = "cocoa"
+
+[[variant]]
+label = "segb-default"

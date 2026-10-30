@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "health_weight.txt"
+
+id = "health_weight"
+name = "health_weight"
+activity = "Health Weight"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Health Weight"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["healthdb_secure.sqlite"]
+path_globs = ["**/healthdb_secure.sqlite", "**/healthdb_secure.sqlite-wal", "**/Archives/healthdb_secure.sqlite.gz", "**/Archives/healthdb_secure.sqlite"]
+
+[timestamp]
+column = "date"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(SAMPLES.START_DATE + 978307200, 'UNIXEPOCH') AS "DATE",
+		QUANTITY AS "WEIGHT (IN KG)",
+		QUANTITY*2.20462 AS "WEIGHT (IN LBS)",
+		SAMPLES.DATA_ID AS "SAMPLES TABLE ID" 
+	FROM
+	   SAMPLES 
+	   LEFT OUTER JOIN QUANTITY_SAMPLES ON SAMPLES.DATA_ID = QUANTITY_SAMPLES.DATA_ID 
+	WHERE
+	   SAMPLES.DATA_TYPE = 3 
+	   AND "DATE" IS  NOT NULL
+'''
+[variant.requires]
+tables = ["QUANTITY_SAMPLES"]

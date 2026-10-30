@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "routined_cache_zrtcllocationmo.txt"
+
+id = "routined_cache_zrtcllocationmo"
+name = "routined_cache_zrtcllocationmo"
+activity = "Routined Location"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Granular Location Data (~1 Week)"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CoreRoutine.sqlite,Cache.sqlite"]
+path_globs = ["**/CoreRoutine.sqlite,Cache.sqlite", "**/CoreRoutine.sqlite,Cache.sqlite-wal", "**/Archives/CoreRoutine.sqlite,Cache.sqlite.gz", "**/Archives/CoreRoutine.sqlite,Cache.sqlite"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10_11_12_13_14"
+sql = '''
+SELECT
+      DATETIME(ZTIMESTAMP + 978307200, 'UNIXEPOCH') AS "TIMESTAMP",
+      ZLATITUDE || ", " || ZLONGITUDE AS "COORDINATES",
+      ZALTITUDE AS "ALTITUDE",
+      ZCOURSE AS "COURSE",
+      ZSPEED AS "SPEED (M/S)",
+      ZSPEED*2.23694 AS "SPEED (MPH)",
+      ZSPEED*3.6 AS "SPEED (KMPH)",
+      ZHORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+      ZVERTICALACCURACY AS "VERTICAL ACCURACY",
+      ZLATITUDE AS "LATITUDE",
+      ZLONGITUDE AS "LONGITUDE",
+      ZRTCLLOCATIONMO.Z_PK AS "ZRTCLLOCATIONMO TABLE ID" 
+   FROM
+      ZRTCLLOCATIONMO
+'''
+[variant.requires]
+tables = []

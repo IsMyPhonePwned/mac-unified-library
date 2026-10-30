@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "mul-io"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Source abstraction, path normalisation, gzip for mac-unified-library"
+
+[features]
+default = ["mmap"]
+mmap = ["dep:memmap2"]
+
+[dependencies]
+mul-core = { workspace = true }
+thiserror = { workspace = true }
+flate2 = { workspace = true }
+memmap2 = { workspace = true, optional = true }
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+tempfile = { workspace = true }

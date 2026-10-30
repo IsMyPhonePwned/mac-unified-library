@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_mobilebackup.txt"
+
+id = "powerlog_mobilebackup"
+name = "powerlog_mobilebackup"
+activity = "Mobile Backup Status"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Mobile Backup Status"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-11_12_13_14"
+sql = '''
+SELECT
+	   DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+	   DATETIME(START, 'UNIXEPOCH') AS "START",
+	   DATETIME(END, 'UNIXEPOCH') AS "END",
+	   STATE AS "STATE",
+	   FINISHED AS "FINISHED",
+	   HASERROR AS "HAS ERROR",
+	   ID AS "PLXPCAGENT_EVENTPOINT_MOBILEBACKUPEVENTS TABLE ID" 
+	FROM
+	   PLXPCAGENT_EVENTPOINT_MOBILEBACKUPEVENTS
+'''
+[variant.requires]
+tables = []

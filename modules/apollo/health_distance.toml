@@ -1,0 +1,42 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "health_distance.txt"
+
+id = "health_distance"
+name = "health_distance"
+activity = "Health Distance"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Health Distance"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["healthdb_secure.sqlite"]
+path_globs = ["**/healthdb_secure.sqlite", "**/healthdb_secure.sqlite-wal", "**/Archives/healthdb_secure.sqlite.gz", "**/Archives/healthdb_secure.sqlite"]
+
+[timestamp]
+column = "start_date"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(SAMPLES.START_DATE + 978307200, 'UNIXEPOCH') AS "START DATE",
+		DATETIME(SAMPLES.END_DATE + 978307200, 'UNIXEPOCH') AS "END DATE",
+		QUANTITY AS "DISTANCE IN METERS",
+		QUANTITY*3.28084 AS "DISTANCE IN FEET",
+		(SAMPLES.END_DATE-SAMPLES.START_DATE) AS "TIME IN SECONDS",
+		SAMPLES.DATA_ID AS "SAMPLES TABLE ID" 
+	FROM
+	   SAMPLES 
+	   LEFT OUTER JOIN
+	      QUANTITY_SAMPLES 
+	      ON SAMPLES.DATA_ID = QUANTITY_SAMPLES.DATA_ID 
+	   LEFT OUTER JOIN
+	      CORRELATIONS 
+	      ON SAMPLES.DATA_ID = CORRELATIONS.OBJECT 
+	WHERE
+	   SAMPLES.DATA_TYPE = 8
+'''
+[variant.requires]
+tables = []

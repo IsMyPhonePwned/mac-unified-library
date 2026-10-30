@@ -1,0 +1,76 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "locationd_cacheencryptedC_stepcounthistory.txt"
+
+id = "locationd_cacheencryptedC_stepcounthistory"
+name = "locationd_cacheencryptedC_stepcounthistory"
+activity = "Health - Step Count"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Locationd Step Count History"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedC.db"]
+path_globs = ["**/cache_encryptedC.db", "**/cache_encryptedC.db-wal", "**/Archives/cache_encryptedC.db.gz", "**/Archives/cache_encryptedC.db"]
+
+[timestamp]
+column = "start_time"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10_11_12_13_14"
+sql = '''
+SELECT 
+		DATETIME(STARTTIME + 978307200, 'UNIXEPOCH') AS "START TIME",
+		TIMESTAMP AS "MOVEMENT TIME",
+		COUNT AS "COUNT", 
+		DISTANCE AS "DISTANCE", 
+		RAWDISTANCE AS "RAWDISTANCE",
+		FLOORSASCENDED AS "FLOORS ASCENDED",
+		FLOORSDESCENDED AS "FLOORS DESCENDED",
+		PACE AS "PACE",
+		ACTIVETIME AS "ACTIVE TIME",
+		FIRSTSTEPTIME AS "FIRST STEP TIME",
+		PUSHCOUNT AS "PUSH COUNT",
+		WORKOUTTYPE AS "WORKOUT TYPE",
+		STEPCOUNTHISTORY.ID AS "STEPCOUNTHISTORY TABLE ID"
+	FROM STEPCOUNTHISTORY
+'''
+[variant.requires]
+tables = ["STEPCOUNTHISTORY"]
+
+[[variant]]
+label = "legacy-9"
+sql = '''
+SELECT 
+		DATETIME(STARTTIME + 978307200, 'UNIXEPOCH') AS "START TIME",
+		TIMESTAMP AS "MOVEMENT TIME",
+		COUNT AS "COUNT", 
+		DISTANCE AS "DISTANCE", 
+		RAWDISTANCE AS "RAWDISTANCE",
+		FLOORSASCENDED AS "FLOORS ASCENDED",
+		FLOORSDESCENDED AS "FLOORS DESCENDED",
+		PACE AS "PACE",
+		ACTIVETIME AS "ACTIVE TIME",
+		STEPCOUNTHISTORY.ID AS "STEPCOUNTHISTORY TABLE ID"
+	FROM STEPCOUNTHISTORY
+'''
+[variant.requires]
+tables = ["STEPCOUNTHISTORY"]
+
+[[variant]]
+label = "legacy-8"
+sql = '''
+SELECT 
+		DATETIME(STARTTIME + 978307200, 'UNIXEPOCH') AS "START TIME",
+		TIMESTAMP AS "MOVEMENT TIME",
+		COUNT AS "COUNT", 
+		DISTANCE AS "DISTANCE", 
+		RAWDISTANCE AS "RAWDISTANCE",
+		FLOORSASCENDED AS "FLOORS ASCENDED",
+		FLOORSDESCENDED AS "FLOORS DESCENDED",
+		STEPCOUNTHISTORY.ID AS "STEPCOUNTHISTORY TABLE ID"
+	FROM STEPCOUNTHISTORY
+'''
+[variant.requires]
+tables = ["STEPCOUNTHISTORY"]

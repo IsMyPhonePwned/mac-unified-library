@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "knowledge_notification_usage.txt"
+
+id = "knowledge_notification_usage"
+name = "knowledge_notification_usage"
+activity = "Notification Usage"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Notification Usage"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["knowledgeC.db"]
+path_globs = ["**/knowledgeC.db", "**/knowledgeC.db-wal", "**/Archives/knowledgeC.db.gz", "**/Archives/knowledgeC.db"]
+
+[timestamp]
+column = "start"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-12_13_10.15_10.16_14"
+sql = '''
+SELECT
+      DATETIME(ZOBJECT.ZSTARTDATE+978307200,'UNIXEPOCH') AS "START", 
+      DATETIME(ZOBJECT.ZENDDATE+978307200,'UNIXEPOCH') AS "END",
+      ZSTRUCTUREDMETADATA.Z_DKNOTIFICATIONUSAGEMETADATAKEY__BUNDLEID AS "BUNDLE ID",
+      ZOBJECT.ZVALUESTRING AS "NOTIFICATION TYPE", 
+      ZSOURCE.ZDEVICEID AS "DEVICE ID (HARDWARE UUID)",  
+      ZSTRUCTUREDMETADATA.Z_DKNOTIFICATIONUSAGEMETADATAKEY__IDENTIFIER AS "ID", 
+      CASE ZOBJECT.ZSTARTDAYOFWEEK 
+         WHEN "1" THEN "Sunday"
+         WHEN "2" THEN "Monday"
+         WHEN "3" THEN "Tuesday"
+         WHEN "4" THEN "Wednesday"
+         WHEN "5" THEN "Thursday"
+         WHEN "6" THEN "Friday"
+         WHEN "7" THEN "Saturday"
+      END "DAY OF WEEK",
+      ZOBJECT.ZSECONDSFROMGMT/3600 AS "GMT OFFSET",
+      DATETIME(ZOBJECT.ZCREATIONDATE+978307200,'UNIXEPOCH') AS "ENTRY CREATION", 
+      ZOBJECT.ZUUID AS "UUID",
+		ZSTRUCTUREDMETADATA.ZMETADATAHASH,
+		ZOBJECT.Z_PK AS "ZOBJECT TABLE ID"
+	FROM ZOBJECT
+	      LEFT JOIN
+         ZSTRUCTUREDMETADATA 
+         ON ZOBJECT.ZSTRUCTUREDMETADATA = ZSTRUCTUREDMETADATA.Z_PK 
+      LEFT JOIN
+         ZSOURCE 
+         ON ZOBJECT.ZSOURCE = ZSOURCE.Z_PK 
+   WHERE
+      ZSTREAMNAME = "/notification/usage"
+'''
+[variant.requires]
+tables = ["ZOBJECT"]

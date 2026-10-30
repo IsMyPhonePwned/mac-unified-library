@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "mul-ingest"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Input discovery and adapters for mac-unified-library"
+
+[features]
+default = ["ng", "parallel"]
+ng = ["dep:sysdiagnose_extractor_library"]
+parallel = ["mul-core/parallel"]
+live = []
+
+[dependencies]
+mul-core = { workspace = true }
+mul-io = { workspace = true }
+mul-unifiedlog = { workspace = true }
+mul-apollo = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+smallvec = { workspace = true }
+uuid = { workspace = true }
+sysdiagnose_extractor_library = { workspace = true, optional = true }
+plist = { workspace = true }

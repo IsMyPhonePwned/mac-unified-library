@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "aggregate_dictionary_scalars.txt"
+
+id = "aggregate_dictionary_scalars"
+name = "aggregate_dictionary_scalars"
+activity = "Aggregate Dictionary - Scalar"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Keeping track of various values on a per-day basis."
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["ADDataStore.sqlitedb"]
+path_globs = ["**/ADDataStore.sqlitedb", "**/ADDataStore.sqlitedb-wal", "**/Archives/ADDataStore.sqlitedb.gz", "**/Archives/ADDataStore.sqlitedb"]
+
+[timestamp]
+column = "day"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9_10_11_12_13_14"
+sql = '''
+SELECT
+	   DATE(DAYSSINCE1970*86400, 'unixepoch') AS DAY,
+	   KEY AS "KEY",
+	   VALUE AS "VALUE"
+	FROM
+	   SCALARS
+'''
+[variant.requires]
+tables = []

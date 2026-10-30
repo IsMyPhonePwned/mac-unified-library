@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+id = "powerlog_app_usage_by_hour_ng"
+name = "Powerlog app usage by hour"
+activity = "App Usage"
+author = "mac-unified-library"
+notes = "Schema-probed powerlog variant for iOS 15+."
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL", "powerlog.PLSQL"]
+path_globs = ["**/*.PLSQL", "**/*.PLSQL.gz"]
+
+[timestamp]
+column = "timestamp"
+epoch = "cocoa"
+
+[[variant]]
+label = "PLAppTimeService_Aggregate_AppRunTime"
+sql = """
+SELECT timestamp, BundleID, ScreenOnTime, BackgroundTime
+FROM PLAppTimeService_Aggregate_AppRunTime
+"""
+[variant.requires]
+tables = ["PLAppTimeService_Aggregate_AppRunTime"]
+columns = [["timestamp", "BundleID"]]

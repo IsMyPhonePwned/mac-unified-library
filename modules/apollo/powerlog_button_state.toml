@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_button_state.txt"
+
+id = "powerlog_button_state"
+name = "powerlog_button_state"
+activity = "Button State"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Button State"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10_11_12_13_14"
+sql = '''
+SELECT
+	   DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+	   BUTTONTYPE AS "BUTTON TYPE",
+	   EVENTTYPE AS "EVENT TYPE",
+	   ID AS "PLBUTTONAGENT_EVENTPOINT_BUTTONTABLE TABLE ID" 
+	FROM
+	   PLBUTTONAGENT_EVENTPOINT_BUTTON
+'''
+[variant.requires]
+tables = []

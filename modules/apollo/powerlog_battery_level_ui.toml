@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_battery_level_ui.txt"
+
+id = "powerlog_battery_level_ui"
+name = "powerlog_battery_level_ui"
+activity = "Battery Level UI"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = ""
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14_10.16"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		LEVEL AS 'LEVEL',
+		DATETIME(TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_TIMESTAMP,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		TABLE_ID AS "PLBATTERYAGENT_EVENTBACKWARD_BATTERYUI TABLE ID"
+	FROM
+	(
+	SELECT
+		TABLE_ID,
+		TIMESTAMP,
+		TIME_OFFSET_TIMESTAMP,
+		MAX(TIME_OFFSET_ID) AS MAX_ID,
+		LEVEL,
+		SYSTEM
+	FROM
+	(
+	SELECT
+		PLBATTERYAGENT_EVENTBACKWARD_BATTERYUI.TIMESTAMP,
+		PLBATTERYAGENT_EVENTBACKWARD_BATTERYUI.LEVEL,
+		PLBATTERYAGENT_EVENTBACKWARD_BATTERYUI.ID AS "TABLE_ID",
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+	FROM
+		PLBATTERYAGENT_EVENTBACKWARD_BATTERYUI 
+	LEFT JOIN
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET 
+	)
+	GROUP BY
+	TABLE_ID 
+         )
+'''
+[variant.requires]
+tables = []

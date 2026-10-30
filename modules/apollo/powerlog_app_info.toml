@@ -1,0 +1,79 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_app_info.txt"
+
+id = "powerlog_app_info"
+name = "powerlog_app_info"
+activity = "App Info"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Get a listing of applications and associated data (app name, executable name, bundle ID, app version, app type and deletion date/status). Not really a log per se, but a good listing of application information. App Types: 1=\"Background iOS Service\", 3=iOS Native Apps, 4=3rd Party Apps"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+		APPNAME AS "APP NAME",
+		APPEXECUTABLE AS "APP EXECUTABLE NAME",
+		APPBUNDLEID AS "BUNDLE ID",
+		APPBUILDVERSION AS "APP BUILD VERSION",
+		APPBUNDLEVERSION AS "APP BUNDLE VERSION",
+		APPTYPE AS "APP TYPE",
+		CASE APPDELETEDDATE 
+			WHEN 0 THEN "NOT DELETED" 
+			ELSE DATETIME(APPDELETEDDATE, 'UNIXEPOCH') 
+		END "APP DELETED DATE",
+		ID AS "PLAPPLICATIONAGENT_EVENTNONE_ALLAPPS TABLE ID" 
+	FROM
+		PLAPPLICATIONAGENT_EVENTNONE_ALLAPPS
+'''
+[variant.requires]
+tables = []
+
+[[variant]]
+label = "legacy-10"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+		APPNAME AS "APP NAME",
+		APPEXECUTABLE AS "APP EXECUTABLE NAME",
+		APPBUNDLEID AS "BUNDLE ID",
+		APPBUILDVERSION AS "APP BUILD VERSION",
+		APPBUNDLEVERSION AS "APP BUNDLE VERSION",
+		CASE APPDELETEDDATE 
+			WHEN 0 THEN "NOT DELETED" 
+			ELSE DATETIME(APPDELETEDDATE, 'UNIXEPOCH') 
+		END "APP DELETED DATE",
+		ID AS "PLAPPLICATIONAGENT_EVENTNONE_ALLAPPS TABLE ID" 
+	FROM
+		PLAPPLICATIONAGENT_EVENTNONE_ALLAPPS
+'''
+[variant.requires]
+tables = []
+
+[[variant]]
+label = "legacy-9"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+		APPNAME AS "APP NAME",
+		APPBUNDLEID AS "BUNDLE ID",
+		CASE APPDELETEDDATE 
+			WHEN 0 THEN "NOT DELETED" 
+			ELSE DATETIME(APPDELETEDDATE, 'UNIXEPOCH') 
+		END "APP DELETED DATE",
+		ID AS "PLAPPLICATIONAGENT_EVENTNONE_ALLAPPS TABLE ID" 
+	FROM
+		PLAPPLICATIONAGENT_EVENTNONE_ALLAPPS
+'''
+[variant.requires]
+tables = []

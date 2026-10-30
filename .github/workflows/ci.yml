@@ -1,0 +1,34 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  native:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: Fetch -ng sibling (path dep)
+        run: |
+          # CI clone layout: place -ng next to this repo when available.
+          if [ ! -d ../sysdiagnose-extractor-library-ng ]; then
+            git clone --depth 1 https://github.com/IsMyPhonePwned/sysdiagnose-extractor-library-ng.git ../sysdiagnose-extractor-library-ng || true
+          fi
+      - run: cargo test --workspace --exclude mul-python --exclude mul-wasm
+      - run: cargo clippy --workspace --exclude mul-python --exclude mul-wasm -- -D warnings
+
+  wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - run: cargo build -p mul-core --target wasm32-unknown-unknown --no-default-features
+      - run: cargo build -p mul-unifiedlog --target wasm32-unknown-unknown --no-default-features
+      - run: cargo build -p mul-apollo --target wasm32-unknown-unknown --no-default-features --features biome
+      - run: cargo build -p mac-unified-library --target wasm32-unknown-unknown --no-default-features --features wasm

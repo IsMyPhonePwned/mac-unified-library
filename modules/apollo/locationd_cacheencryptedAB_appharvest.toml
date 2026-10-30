@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "locationd_cacheencryptedAB_appharvest.txt"
+
+id = "locationd_cacheencryptedAB_appharvest"
+name = "locationd_cacheencryptedAB_appharvest"
+activity = "App Harvest Location"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Locationd App Harvest Location"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedB.db,cache_encryptedA.db"]
+path_globs = ["**/cache_encryptedB.db,cache_encryptedA.db", "**/cache_encryptedB.db,cache_encryptedA.db-wal", "**/Archives/cache_encryptedB.db,cache_encryptedA.db.gz", "**/Archives/cache_encryptedB.db,cache_encryptedA.db"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9_10"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP",
+		BUNDLEID AS "BUNDLE ID",
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		ALTITUDE AS "ALTITUDE",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		STATE AS "STATE",
+		AGE AS "AGE",
+		ROUTINEMODE AS "ROUTINE MODE",
+		LOCATIONOFINTERESTTYPE AS "LOCATION OF INTEREST TYPE",
+		HEX(SIG) AS "SIG (HEX)",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE",
+		SPEED AS "SPEED",
+		COURSE AS "COURSE",
+		CONFIDENCE AS "CONFIDENCE"
+	FROM APPHARVEST
+'''
+[variant.requires]
+tables = ["APPHARVEST"]

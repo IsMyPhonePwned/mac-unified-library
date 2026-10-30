@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_backcamera_state.txt"
+
+id = "powerlog_backcamera_state"
+name = "powerlog_backcamera_state"
+activity = "Back Camera State"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Records when back camera is in use."
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9"
+sql = '''
+SELECT
+      DATETIME(CAMERA_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+      BUNDLEID AS BUNDLE_ID,
+      CASE STATE
+         WHEN "0" THEN "OFF"
+         WHEN "1" THEN "ON"
+      END AS STATE,
+      DATETIME(CAMERA_TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_CAMERA_TIMESTAMP,
+      DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+      SYSTEM AS TIME_OFFSET,
+      CAMERA_ID AS "PLCAMERAAGENT_EVENTFORWARD_BACKCAMERA TABLE ID"
+   FROM
+      (
+      SELECT
+         BUNDLEID,
+         CAMERA_ID,
+         CAMERA_TIMESTAMP,
+         TIME_OFFSET_TIMESTAMP,
+         MAX(TIME_OFFSET_ID) AS MAX_ID,
+         SYSTEM,
+         STATE
+      FROM
+         (
+         SELECT
+            PLCAMERAAGENT_EVENTFORWARD_BACKCAMERA.TIMESTAMP AS CAMERA_TIMESTAMP,
+            PLCAMERAAGENT_EVENTFORWARD_BACKCAMERA.BUNDLEID,
+            PLCAMERAAGENT_EVENTFORWARD_BACKCAMERA.STATE,
+            PLCAMERAAGENT_EVENTFORWARD_BACKCAMERA.ID AS "CAMERA_ID",
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM,
+            BUNDLEID 
+         FROM
+            PLCAMERAAGENT_EVENTFORWARD_BACKCAMERA 
+         LEFT JOIN
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET  
+            )
+            AS CAMERASTATE 
+         GROUP BY
+            CAMERA_ID 
+      )
+'''
+[variant.requires]
+tables = []

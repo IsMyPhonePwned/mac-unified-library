@@ -1,0 +1,83 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+[workspace]
+resolver = "2"
+members = [
+    "crates/mul-core",
+    "crates/mul-io",
+    "crates/mul-unifiedlog",
+    "crates/mul-apollo",
+    "crates/mul-ingest",
+    "crates/mul-correlate",
+    "crates/mul-export",
+    "crates/mac-unified-library",
+    "crates/mul-cli",
+    "crates/mul-wasm",
+    "crates/mul-python",
+    "xtask",
+]
+default-members = [
+    "crates/mul-core",
+    "crates/mul-io",
+    "crates/mul-unifiedlog",
+    "crates/mul-apollo",
+    "crates/mul-ingest",
+    "crates/mul-correlate",
+    "crates/mul-export",
+    "crates/mac-unified-library",
+    "crates/mul-cli",
+    "xtask",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-only"
+authors = ["IsMyPhonePwned"]
+repository = "https://github.com/IsMyPhonePwned/mac-unified-library"
+
+[workspace.dependencies]
+mul-core = { path = "crates/mul-core", default-features = true }
+mul-io = { path = "crates/mul-io", default-features = true }
+mul-unifiedlog = { path = "crates/mul-unifiedlog", default-features = true }
+mul-apollo = { path = "crates/mul-apollo", default-features = true }
+mul-ingest = { path = "crates/mul-ingest", default-features = true }
+mul-correlate = { path = "crates/mul-correlate", default-features = true }
+mul-export = { path = "crates/mul-export", default-features = true }
+mac-unified-library = { path = "crates/mac-unified-library", default-features = true }
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "2"
+anyhow = "1"
+chrono = { version = "0.4", default-features = false, features = ["std", "alloc"] }
+hashbrown = { version = "0.15" }
+smallvec = { version = "1.13", features = ["serde", "union"] }
+uuid = { version = "1.11", features = ["serde"] }
+memchr = "2.7"
+bstr = "1.11"
+lz4_flex = { version = "0.11", default-features = false, features = ["std"] }
+flate2 = { version = "1", default-features = false, features = ["zlib-rs"] }
+plist = { version = "1.7", default-features = false }
+toml = "0.8"
+rayon = "1.10"
+memmap2 = "0.9"
+rusqlite = { version = "0.32", features = ["bundled"] }
+tempfile = "3"
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+sysdiagnose_extractor_library = { path = "../sysdiagnose-extractor-library-ng", default-features = false }
+pyo3 = { version = "0.23", features = ["extension-module", "abi3-py39"] }
+wasm-bindgen = "0.2"
+js-sys = "0.3"
+console_error_panic_hook = "0.1"
+ahash = "0.8"
+regex = "1"
+once_cell = "1.20"
+getrandom = { version = "0.3", features = ["wasm_js"] }
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1

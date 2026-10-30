@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "knowledge_standby_timer.txt"
+
+id = "knowledge_standby_timer"
+name = "knowledge_standby_timer"
+activity = "Standby Timer"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Standby Timer"
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["knowledgeC.db"]
+path_globs = ["**/knowledgeC.db", "**/knowledgeC.db-wal", "**/Archives/knowledgeC.db.gz", "**/Archives/knowledgeC.db"]
+
+[timestamp]
+column = "start"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-13_10.15_10.16_14"
+sql = '''
+SELECT
+      DATETIME(ZOBJECT.ZSTARTDATE+978307200,'UNIXEPOCH') AS "START", 
+      DATETIME(ZOBJECT.ZENDDATE+978307200,'UNIXEPOCH') AS "END",
+      ZSTRUCTUREDMETADATA.Z_DKDEVICESTANDBYTIMERMETADATAKEY__TIMERTYPE AS "TIMER TYPE",
+      ZSTRUCTUREDMETADATA.Z_DKDEVICESTANDBYTIMERMETADATAKEY__DELAY AS "DELAY",
+      ZOBJECT.ZVALUESTRING AS "SERVICE", 
+      CASE ZOBJECT.ZSTARTDAYOFWEEK 
+         WHEN "1" THEN "Sunday"
+         WHEN "2" THEN "Monday"
+         WHEN "3" THEN "Tuesday"
+         WHEN "4" THEN "Wednesday"
+         WHEN "5" THEN "Thursday"
+         WHEN "6" THEN "Friday"
+         WHEN "7" THEN "Saturday"
+      END "DAY OF WEEK", 
+      ZOBJECT.ZSECONDSFROMGMT/3600 AS "GMT OFFSET",
+      DATETIME(ZOBJECT.ZCREATIONDATE+978307200,'UNIXEPOCH') AS "ENTRY CREATION",
+      ZOBJECT.ZUUID AS "UUID", 
+      ZOBJECT.Z_PK AS "ZOBJECT TABLE ID"
+   FROM
+      ZOBJECT 
+      LEFT JOIN
+         ZSTRUCTUREDMETADATA 
+         ON ZOBJECT.ZSTRUCTUREDMETADATA = ZSTRUCTUREDMETADATA.Z_PK 
+      LEFT JOIN
+         ZSOURCE 
+         ON ZOBJECT.ZSOURCE = ZSOURCE.Z_PK 
+   WHERE
+      ZSTREAMNAME IS "/standby/timer"
+'''
+[variant.requires]
+tables = []

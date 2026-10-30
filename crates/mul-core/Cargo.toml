@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: GPL-3.0-only
+
+[package]
+name = "mul-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Event model, interner, filters, and parallelism shim for mac-unified-library"
+
+[features]
+default = ["parallel"]
+parallel = ["dep:rayon"]
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+hashbrown = { workspace = true }
+smallvec = { workspace = true }
+ahash = { workspace = true }
+regex = { workspace = true }
+rayon = { workspace = true, optional = true }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

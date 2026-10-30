@@ -1,0 +1,121 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_camera_state.txt"
+
+id = "powerlog_camera_state"
+name = "powerlog_camera_state"
+activity = "Camera State"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Records when and which camera is in use."
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-11_12_13_14"
+sql = '''
+SELECT
+      DATETIME(CAMERA_TIMESTAMP + SYSTEM, 'unixepoch') AS ADJUSTED_TIMESTAMP,
+      BUNDLEID AS BUNDLE_ID,
+      CASE STATE
+         WHEN "0" THEN "OFF"
+         WHEN "1" THEN "ON"
+      END AS STATE,
+      CASE CAMERA_TYPE
+         WHEN "2" THEN "FRONT"
+         WHEN "0" THEN "BACK"
+      END AS CAMERA_TYPE,
+      DATETIME(CAMERA_TIMESTAMP, 'unixepoch') AS ORIGINAL_CAMERA_TIMESTAMP,
+      DATETIME(TIME_OFFSET_TIMESTAMP, 'unixepoch') AS OFFSET_TIMESTAMP,
+      SYSTEM AS TIME_OFFSET,
+      CAMERA_ID AS "PLCAMERAAGENT_EVENTFORWARD_CAMERA TABLE ID"
+   FROM
+      (
+      SELECT
+         BUNDLEID,
+         CAMERA_ID,
+         CAMERA_TIMESTAMP,
+         TIME_OFFSET_TIMESTAMP,
+         MAX(TIME_OFFSET_ID) AS max_id,
+         SYSTEM,
+         CAMERA_TYPE,
+         STATE
+      FROM
+         (
+         SELECT
+            PLCAMERAAGENT_EVENTFORWARD_CAMERA.TIMESTAMP AS CAMERA_TIMESTAMP,
+            PLCAMERAAGENT_EVENTFORWARD_CAMERA.BUNDLEID,
+            PLCAMERAAGENT_EVENTFORWARD_CAMERA.CAMERATYPE AS "CAMERA_TYPE",
+            PLCAMERAAGENT_EVENTFORWARD_CAMERA.STATE,
+            PLCAMERAAGENT_EVENTFORWARD_CAMERA.ID AS "CAMERA_ID",
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+         FROM
+            PLCAMERAAGENT_EVENTFORWARD_CAMERA 
+         LEFT JOIN
+            PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET  
+            )
+            AS CAMERASTATE 
+         GROUP BY
+            CAMERA_ID 
+      )
+'''
+[variant.requires]
+tables = []
+
+[[variant]]
+label = "legacy-10.15_10.16"
+sql = '''
+SELECT
+         DATETIME(CAMERA_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+         CASE STATE
+            WHEN "0" THEN "OFF"
+            WHEN "1" THEN "ON"
+         END AS STATE,
+         CASE CAMERA_TYPE
+            WHEN "2" THEN "FRONT"
+            WHEN "0" THEN "BACK"
+         END AS CAMERA_TYPE,
+         DATETIME(CAMERA_TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_CAMERA_TIMESTAMP,
+         DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+         SYSTEM AS TIME_OFFSET,
+         CAMERA_ID AS "PLCAMERAAGENT_EVENTFORWARD_CAMERA TABLE ID"
+      FROM
+         (
+         SELECT
+            CAMERA_ID,
+            CAMERA_TIMESTAMP,
+            TIME_OFFSET_TIMESTAMP,
+            MAX(TIME_OFFSET_ID) AS MAX_ID,
+            SYSTEM,
+            CAMERA_TYPE,
+            STATE
+         FROM
+            (
+            SELECT
+               PLCAMERAAGENT_EVENTFORWARD_CAMERA.TIMESTAMP AS CAMERA_TIMESTAMP,
+               PLCAMERAAGENT_EVENTFORWARD_CAMERA.CAMERATYPE AS "CAMERA_TYPE",
+               PLCAMERAAGENT_EVENTFORWARD_CAMERA.STATE,
+               PLCAMERAAGENT_EVENTFORWARD_CAMERA.ID AS "CAMERA_ID",
+               PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+               PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+               PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+            FROM
+               PLCAMERAAGENT_EVENTFORWARD_CAMERA 
+            LEFT JOIN
+               PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET 
+               )
+               AS CAMERASTATE 
+            GROUP BY
+               CAMERA_ID 
+         )
+'''
+[variant.requires]
+tables = []

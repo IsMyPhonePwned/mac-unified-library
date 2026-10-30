@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "passes23_unique_passes_cards.txt"
+
+id = "passes23_unique_passes_cards"
+name = "passes23_unique_passes_cards"
+activity = "Wallet Unique Pass/Card"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Wallet Unique Passes & Cards"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["passes23.sqlite"]
+path_globs = ["**/passes23.sqlite", "**/passes23.sqlite-wal", "**/Archives/passes23.sqlite.gz", "**/Archives/passes23.sqlite"]
+
+[timestamp]
+column = "ingested_date"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10_11_12_13_14"
+sql = '''
+SELECT
+		DISTINCT(SERIAL_NUMBER) AS "SERIAL NUMBER",
+		DATETIME(PASS.INGESTED_DATE+978307200,'UNIXEPOCH') AS "INGESTED DATE",
+		DATETIME(PASS.MODIFIED_DATE+978307200,'UNIXEPOCH') AS "MODIFIED DATE",
+		DATETIME(PASS.RELEVANT_DATE+978307200,'UNIXEPOCH') AS "RELEVANT TIME",
+		DATETIME(PASS.PUSH_REGISTRATION_DATE+978307200,'UNIXEPOCH') AS "PUSH REGISTRATION TIME",
+		PASS.ORGANIZATION_NAME AS "ORGANIZATION NAME",
+		PASS_TYPE.IDENTIFIER AS "IDENTIFIER",
+		PASS.LAST_MODIFIED_TAG AS "LAST MODIFIED TAG",
+		PASS.UNIQUE_ID AS "PASS ID"
+	FROM PASS
+	LEFT JOIN PASS_TYPE ON PASS.PASS_TYPE_PID == PASS_TYPE.PID
+'''
+[variant.requires]
+tables = ["PASS", "PASS_TYPE"]

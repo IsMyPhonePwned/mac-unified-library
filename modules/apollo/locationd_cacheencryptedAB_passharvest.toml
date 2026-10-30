@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "locationd_cacheencryptedAB_passharvest.txt"
+
+id = "locationd_cacheencryptedAB_passharvest"
+name = "locationd_cacheencryptedAB_passharvest"
+activity = "Pass Location Harvest"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Locationd Pass Harvest"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["cache_encryptedB.db,cache_encryptedA.db"]
+path_globs = ["**/cache_encryptedB.db,cache_encryptedA.db", "**/cache_encryptedB.db,cache_encryptedA.db-wal", "**/Archives/cache_encryptedB.db,cache_encryptedA.db.gz", "**/Archives/cache_encryptedB.db,cache_encryptedA.db"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-8_9_10"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + 978307200,'UNIXEPOCH') AS "TIMESTAMP",
+		LATITUDE || ", " || LONGITUDE AS "COORDINATES",
+		PASSTYPEID AS "PASS TYPE ID",
+		ASSOCIATEDSTOREIDS AS  "ASSOCIATED STORE IDS",
+		PASSSOURCE AS "PASS SOURCE",
+		AGE AS "AGE",
+		SIG AS "SIG",
+		CONFIDENCE AS "CONFIDENCE",
+		ALTITUDE AS "ALTITUDE",
+		HORIZONTALACCURACY AS "HORIZONTAL ACCURACY",
+		VERTICALACCURACY AS "VERTICAL ACCURACY",
+		LATITUDE AS "LATITUDE",
+		LONGITUDE AS "LONGITUDE"
+	FROM PASSHARVEST
+'''
+[variant.requires]
+tables = ["PASSHARVEST"]

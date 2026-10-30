@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_paired_device_config.txt"
+
+id = "powerlog_paired_device_config"
+name = "powerlog_paired_device_config"
+activity = "Paired Device Config"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Paired Device Config"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10_11_12_13_14"
+sql = '''
+SELECT
+	   DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+	   BUILD,
+	   DEVICE,
+	   HWMODEL,
+	   PAIRINGID AS "PAIRING ID",
+	   ID AS "PLCONFIGAGENT_EVENTNONE_PAIREDDEVICECONFIG TABLE ID" 
+	FROM
+	   PLCONFIGAGENT_EVENTNONE_PAIREDDEVICECONFIG
+'''
+[variant.requires]
+tables = []
+
+[[variant]]
+label = "legacy-9"
+sql = '''
+SELECT
+	   DATETIME(TIMESTAMP, 'UNIXEPOCH') AS TIMESTAMP,
+	   BUILD,
+	   DEVICE,
+	   ID AS "PLCONFIGAGENT_EVENTNONE_PAIREDDEVICECONFIG TABLE ID" 
+	FROM
+	   PLCONFIGAGENT_EVENTNONE_PAIREDDEVICECONFIG
+'''
+[variant.requires]
+tables = []

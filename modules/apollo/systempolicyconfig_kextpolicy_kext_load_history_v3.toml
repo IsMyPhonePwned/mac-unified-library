@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "systempolicyconfig_kextpolicy_kext_load_history_v3.txt"
+
+id = "systempolicyconfig_kextpolicy_kext_load_history_v3"
+name = "systempolicyconfig_kextpolicy_kext_load_history_v3"
+activity = "System Policy Configuration - Kext Load History"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "System Policy Configuration - KextPolicy - Kext Load History V3"
+platforms = ["macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["KextPolicy"]
+path_globs = ["**/KextPolicy", "**/KextPolicy-wal", "**/Archives/KextPolicy.gz", "**/Archives/KextPolicy"]
+
+[timestamp]
+column = "created_at"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.15_10.16"
+sql = '''
+SELECT
+		CREATED_AT AS 'CREATED AT',
+		LAST_SEEN AS 'LAST SEEN',
+		PATH AS 'PATH',
+		TEAM_ID AS 'TEAM ID',
+		BUNDLE_ID AS 'BUNDLE ID',
+		BOOT_UUID AS 'BOOT  UUID',
+		FLAGS AS 'FLAGS',
+		CDHASH AS 'CDHASH'
+	FROM KEXT_LOAD_HISTORY_V3
+'''
+[variant.requires]
+tables = ["KEXT_LOAD_HISTORY_V3"]
+
+[[variant]]
+label = "legacy-10.13_10.14"
+sql = '''
+SELECT
+		CREATED_AT AS 'CREATED AT',
+		LAST_SEEN AS 'LAST SEEN',
+		PATH AS 'PATH',
+		TEAM_ID AS 'TEAM ID',
+		BUNDLE_ID AS 'BUNDLE ID',
+		BOOT_UUID AS 'BOOT  UUID',
+		FLAGS AS 'FLAGS'
+	FROM KEXT_LOAD_HISTORY_V3
+'''
+[variant.requires]
+tables = ["KEXT_LOAD_HISTORY_V3"]

@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "interaction_contact_interactions_keywords.txt"
+
+id = "interaction_contact_interactions_keywords"
+name = "interaction_contact_interactions_keywords"
+activity = "Contact Interaction Keywords"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Contact Interaction Keywords"
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["interactionC.db"]
+path_globs = ["**/interactionC.db", "**/interactionC.db-wal", "**/Archives/interactionC.db.gz", "**/Archives/interactionC.db"]
+
+[timestamp]
+column = "creation_date"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-12_13_10.15_10.16_14"
+sql = '''
+SELECT 
+      DATETIME(ZKEYWORDS.ZCREATIONDATE+ 978307200, 'UNIXEPOCH') AS 'CREATION DATE', 
+      ZKEYWORDS.ZKEYWORD AS 'KEYWORD',
+      ZINTERACTIONS.ZBUNDLEID AS 'BUNDLE ID',
+      ZINTERACTIONS.ZDOMAINIDENTIFIER AS 'DOMAIN ID',
+      ZINTERACTIONS.ZUUID AS 'UUID',
+      ZKEYWORDS.Z_PK AS 'ZKEYWORDS TABLE ID'
+      FROM ZKEYWORDS
+   JOIN Z_3KEYWORDS ON ZKEYWORDS.Z_PK == Z_3KEYWORDS.Z_4KEYWORDS 
+   JOIN ZINTERACTIONS ON Z_3KEYWORDS.Z_3INTERACTIONS1== ZINTERACTIONS.Z_PK
+'''
+[variant.requires]
+tables = ["ZKEYWORDS", "Z_3KEYWORDS", "ZINTERACTIONS"]
+
+[[variant]]
+label = "legacy-9_10_11"
+sql = '''
+SELECT 
+      DATETIME(ZKEYWORDS.ZCREATIONDATE+ 978307200, 'UNIXEPOCH') AS 'CREATION DATE', 
+      ZKEYWORDS.ZKEYWORD AS 'KEYWORD',
+      ZINTERACTIONS.ZBUNDLEID AS 'BUNDLE ID',
+      ZINTERACTIONS.ZDOMAINIDENTIFIER AS 'DOMAIN ID',
+      ZINTERACTIONS.ZUUID AS 'UUID',
+      ZKEYWORDS.Z_PK AS 'ZKEYWORDS TABLE ID'
+      FROM ZKEYWORDS
+   JOIN Z_2KEYWORDS ON ZKEYWORDS.Z_PK == Z_2KEYWORDS.Z_3KEYWORDS 
+   JOIN ZINTERACTIONS ON Z_2KEYWORDS.Z_2INTERACTIONS== ZINTERACTIONS.Z_PK
+'''
+[variant.requires]
+tables = ["ZKEYWORDS", "Z_2KEYWORDS", "ZINTERACTIONS"]

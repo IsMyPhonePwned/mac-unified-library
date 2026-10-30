@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# APOLLO-NG v2 module — TCC access grants (schema-probed).
+
+id = "tcc_db"
+name = "TCC"
+activity = "Permissions"
+author = "mac-unified-library"
+notes = "Modern TCC schema probe; complements vendored legacy module."
+platforms = ["ios", "macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["TCC.db"]
+path_globs = ["**/TCC.db"]
+
+[timestamp]
+column = "last_modified"
+epoch = "unix"
+
+[[variant]]
+label = "access-v2"
+sql = """
+SELECT service, client, client_type, auth_value, auth_reason, last_modified
+FROM access
+"""
+[variant.requires]
+tables = ["access"]
+columns = [["service", "client", "auth_value", "last_modified"]]
+
+[[variant]]
+label = "access-legacy"
+sql = """
+SELECT service, client, allowed, prompt_count, last_modified
+FROM access
+"""
+[variant.requires]
+tables = ["access"]
+columns = [["service", "client", "allowed", "last_modified"]]

@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "routined_cache_zrvisitmo.txt"
+
+id = "routined_cache_zrvisitmo"
+name = "routined_cache_zrvisitmo"
+activity = "Routined Location - Entry"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Visit Locations"
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["Cache.sqlite,CoreRoutine.sqlite"]
+path_globs = ["**/Cache.sqlite,CoreRoutine.sqlite", "**/Cache.sqlite,CoreRoutine.sqlite-wal", "**/Archives/Cache.sqlite,CoreRoutine.sqlite.gz", "**/Archives/Cache.sqlite,CoreRoutine.sqlite"]
+
+[timestamp]
+column = "entry_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-13_14"
+sql = '''
+SELECT
+		DATETIME(ZENTRYDATE + 978307200, 'UNIXEPOCH') AS "ENTRY TIMESTAMP",
+		DATETIME(ZEXITDATE + 978307200, 'UNIXEPOCH') AS "EXIT TIMESTAMP",
+		ZLOCATIONLATITUDE || ", " ||   ZLOCATIONLONGITUDE AS "COORDINATES",
+		DATETIME(ZDETECTIONDATE + 978307200, 'UNIXEPOCH') AS "DETECTION TIMESTAMP",
+		(ZEXITDATE-ZENTRYDATE)/60.00 AS "VISIT TIME (MINUTES)",
+		ZTYPE AS "TYPE",
+		ZLOCATIONLATITUDE AS "LATITUDE",
+		ZLOCATIONLONGITUDE AS "LONGITUDE",
+		ZLOCATIONUNCERTAINTY AS "UNCERTAINTY",
+		ZDATAPOINTCOUNT AS "DATA POINT COUNT",
+		Z_PK AS "ZRTVISITMO TABLE ID" 
+   FROM
+      ZRTVISITMO
+'''
+[variant.requires]
+tables = []

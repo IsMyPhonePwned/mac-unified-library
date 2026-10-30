@@ -1,0 +1,77 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_audio_routing.txt"
+
+id = "powerlog_audio_routing"
+name = "powerlog_audio_routing"
+activity = "Audio Routing"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Power Log Audio Output (ie: Speaker/CarAudioOutput/HeadphonesBT) of different categories (ie: Audio/Video, VoiceCommand, MediaPlayback)."
+platforms = ["ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-9_10_11_12_13_14"
+sql = '''
+SELECT
+		DATETIME(AUDIOROUTE_TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		ACTIVEROUTE,
+		CASE ACTIVE 
+			WHEN "0" THEN "NO" 
+			WHEN "1" THEN "YES" 
+		END "ACTIVE", 
+		ACTIVEPID AS "ACTIVE PID",
+		OUTPUTCATEGORY AS "OUTPUT CATEGORY",
+		HEADSETHASINPUT AS "HEADSET HAS INPUT",
+		HEADPHONESCONNECTED AS "HEADPHONES CONNECTED",
+		DATETIME(AUDIOROUTE_TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_AUDIOROUTE_TIMESTAMP,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		AUDIOROUTE_ID AS "PLAUDIOAGENT_EVENTFORWARD_ROUTING TABLE ID" 
+	FROM
+      (
+		SELECT
+			AUDIOROUTE_ID,
+			AUDIOROUTE_TIMESTAMP,
+			TIME_OFFSET_TIMESTAMP,
+			MAX(TIME_OFFSET_ID) AS MAX_ID,
+			ACTIVEROUTE,
+			ACTIVE,
+			ACTIVEPID,
+			OUTPUTCATEGORY,
+			HEADSETHASINPUT,
+			HEADPHONESCONNECTED,
+			SYSTEM
+		FROM
+            (
+			SELECT
+				PLAUDIOAGENT_EVENTFORWARD_ROUTING.TIMESTAMP AS AUDIOROUTE_TIMESTAMP,
+				ACTIVEROUTE,
+				ACTIVE, 
+				ACTIVEPID,
+				OUTPUTCATEGORY,
+				HEADSETHASINPUT,
+				HEADPHONESCONNECTED, 
+				PLAUDIOAGENT_EVENTFORWARD_ROUTING.ID AS "AUDIOROUTE_ID" ,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+			FROM
+				PLAUDIOAGENT_EVENTFORWARD_ROUTING
+			LEFT JOIN
+				PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET
+            )
+            AS AUDIOROUTE_STATE 
+		GROUP BY
+			AUDIOROUTE_ID 
+      )
+'''
+[variant.requires]
+tables = []

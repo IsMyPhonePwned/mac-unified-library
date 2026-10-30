@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "quarantine_events.txt"
+
+id = "quarantine_events"
+name = "quarantine_events"
+activity = "Quarantine"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Quarantine Events"
+platforms = ["macos"]
+
+[source]
+kind = "sqlite"
+db_names = ["com.apple.LaunchServices.QuarantineEventsV2"]
+path_globs = ["**/com.apple.LaunchServices.QuarantineEventsV2", "**/com.apple.LaunchServices.QuarantineEventsV2-wal", "**/Archives/com.apple.LaunchServices.QuarantineEventsV2.gz", "**/Archives/com.apple.LaunchServices.QuarantineEventsV2"]
+
+[timestamp]
+column = "timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.13_10.14_10.15_10.16"
+sql = '''
+SELECT 
+		DATETIME(LSQUARANTINETIMESTAMP+978307200,'UNIXEPOCH') AS 'TIMESTAMP',
+		LSQUARANTINEEVENTIDENTIFIER AS 'EVENT ID',
+		LSQUARANTINEAGENTBUNDLEIDENTIFIER AS 'AGENT BUNDLE ID',
+		LSQUARANTINEAGENTNAME AS 'AGENT NAME',
+		LSQUARANTINETYPENUMBER AS 'TYPE NUMBER',
+		LSQUARANTINESENDERNAME AS 'SENDER NAME',
+		LSQUARANTINESENDERADDRESS AS 'SENDER ADDRESS',
+		LSQUARANTINEORIGINTITLE AS 'ORIGIN TITLE',
+		LSQUARANTINEORIGINURLSTRING AS 'ORIGIN URL STRING',
+		LSQUARANTINEORIGINALIAS AS 'ORIGIN ALIAS',
+		LSQUARANTINEDATAURLSTRING AS 'DATA URL STRING'
+	FROM LSQUARANTINEEVENT
+'''
+[variant.requires]
+tables = ["LSQUARANTINEEVENT"]

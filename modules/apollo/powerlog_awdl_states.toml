@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: GPL-3.0-only
+# Converted from legacy APOLLO module "powerlog_awdl_states.txt"
+
+id = "powerlog_awdl_states"
+name = "powerlog_awdl_states"
+activity = "AWDL State"
+author = "Sarah Edwards/mac4n6.com/@iamevltwin"
+notes = "Apple Wireless Direct Link (AWDL) State"
+platforms = ["macos", "ios"]
+
+[source]
+kind = "sqlite"
+db_names = ["CurrentPowerlog.PLSQL"]
+path_globs = ["**/CurrentPowerlog.PLSQL", "**/CurrentPowerlog.PLSQL-wal", "**/Archives/CurrentPowerlog.PLSQL.gz", "**/Archives/CurrentPowerlog.PLSQL"]
+
+[timestamp]
+column = "adjusted_timestamp"
+epoch = "iso_text"
+
+[[variant]]
+label = "legacy-10.15_13_14"
+sql = '''
+SELECT
+		DATETIME(TIMESTAMP + SYSTEM, 'UNIXEPOCH') AS ADJUSTED_TIMESTAMP,
+		AWDLDOWN AS 'AWDL DOWN',
+		DATETIME(TIMESTAMP, 'UNIXEPOCH') AS ORIGINAL_TIMESTAMP,
+		DATETIME(TIME_OFFSET_TIMESTAMP, 'UNIXEPOCH') AS OFFSET_TIMESTAMP,
+		SYSTEM AS TIME_OFFSET,
+		TABLE_ID AS "PLWIFIAGENT_EVENTFORWARD_AWDLSTATE TABLE ID"
+	FROM
+	(
+	SELECT
+		TABLE_ID,
+		TIMESTAMP,
+		TIME_OFFSET_TIMESTAMP,
+		MAX(TIME_OFFSET_ID) AS MAX_ID,
+		AWDLDOWN,
+		SYSTEM
+	FROM
+	(
+	SELECT
+		PLWIFIAGENT_EVENTFORWARD_AWDLSTATE.TIMESTAMP,
+		PLWIFIAGENT_EVENTFORWARD_AWDLSTATE.AWDLDOWN,
+		PLWIFIAGENT_EVENTFORWARD_AWDLSTATE.ID AS "TABLE_ID",
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.TIMESTAMP AS TIME_OFFSET_TIMESTAMP,
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.ID AS TIME_OFFSET_ID,
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET.SYSTEM
+	FROM
+		PLWIFIAGENT_EVENTFORWARD_AWDLSTATE 
+	LEFT JOIN
+		PLSTORAGEOPERATOR_EVENTFORWARD_TIMEOFFSET 
+	)
+	GROUP BY
+	TABLE_ID 
+         )
+'''
+[variant.requires]
+tables = []
