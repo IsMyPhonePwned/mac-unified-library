@@ -4,11 +4,20 @@ on:
   push:
   pull_request:
 
+env:
+  CARGO_NET_GIT_FETCH_WITH_CLI: "true"
+  CARGO_TERM_COLOR: always
+
 jobs:
   each-parser:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: GitHub auth for private Cargo git deps
+        run: |
+          TOKEN='${{ secrets.GH_PAT }}'
+          if [ -z "$TOKEN" ]; then TOKEN='${{ secrets.GITHUB_TOKEN }}'; fi
+          git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
       - uses: dtolnay/rust-toolchain@stable
       - name: Each parser fixture test
         run: cargo test -p mul-ingest --test each_parser -- --nocapture
@@ -17,6 +26,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: GitHub auth for private Cargo git deps
+        run: |
+          TOKEN='${{ secrets.GH_PAT }}'
+          if [ -z "$TOKEN" ]; then TOKEN='${{ secrets.GITHUB_TOKEN }}'; fi
+          git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
       - uses: dtolnay/rust-toolchain@stable
       - name: Each analyser fixture test
         run: cargo test -p mul-correlate --test each_analyser -- --nocapture
@@ -25,6 +39,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: GitHub auth for private Cargo git deps
+        run: |
+          TOKEN='${{ secrets.GH_PAT }}'
+          if [ -z "$TOKEN" ]; then TOKEN='${{ secrets.GITHUB_TOKEN }}'; fi
+          git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: wasm32-unknown-unknown

@@ -75,6 +75,14 @@ regex = "1"
 once_cell = "1.20"
 getrandom = { version = "0.3", features = ["wasm_js"] }
 
+# -ng depends on these crates via git://mac-unified-library. When building this
+# workspace, redirect them to the local members so Cargo does not re-clone us.
+[patch."https://github.com/IsMyPhonePwned/mac-unified-library"]
+mul-core = { path = "crates/mul-core" }
+mul-io = { path = "crates/mul-io" }
+mul-unifiedlog = { path = "crates/mul-unifiedlog" }
+mul-apollo = { path = "crates/mul-apollo" }
+
 [profile.release]
 opt-level = 3
 lto = true

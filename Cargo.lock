@@ -560,13 +560,13 @@ dependencies = [
 name = "mac-unified-library"
 version = "0.1.0"
 dependencies = [
- "mul-apollo 0.1.0",
- "mul-core 0.1.0",
+ "mul-apollo",
+ "mul-core",
  "mul-correlate",
  "mul-export",
  "mul-ingest",
- "mul-io 0.1.0",
- "mul-unifiedlog 0.1.0",
+ "mul-io",
+ "mul-unifiedlog",
  "plist",
  "serde",
  "serde_json",
@@ -616,31 +616,9 @@ dependencies = [
  "chrono",
  "flate2",
  "hashbrown 0.15.5",
- "mul-core 0.1.0",
- "mul-io 0.1.0",
- "mul-unifiedlog 0.1.0",
- "once_cell",
- "regex",
- "rusqlite",
- "serde",
- "serde_json",
- "smallvec",
- "tempfile",
- "thiserror",
- "toml",
-]
-
-[[package]]
-name = "mul-apollo"
-version = "0.1.0"
-source = "git+https://github.com/IsMyPhonePwned/mac-unified-library#4a7f8448b5f59886102efa70584a597edcd672a0"
-dependencies = [
- "ahash",
- "chrono",
- "flate2",
- "hashbrown 0.15.5",
- "mul-core 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
- "mul-io 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
+ "mul-core",
+ "mul-io",
+ "mul-unifiedlog",
  "once_cell",
  "regex",
  "rusqlite",
@@ -659,10 +637,10 @@ dependencies = [
  "anyhow",
  "clap",
  "mac-unified-library",
- "mul-apollo 0.1.0",
- "mul-core 0.1.0",
+ "mul-apollo",
+ "mul-core",
  "mul-export",
- "mul-unifiedlog 0.1.0",
+ "mul-unifiedlog",
  "serde_json",
  "tracing",
  "tracing-subscriber",
@@ -684,29 +662,13 @@ dependencies = [
 ]
 
 [[package]]
-name = "mul-core"
-version = "0.1.0"
-source = "git+https://github.com/IsMyPhonePwned/mac-unified-library#4a7f8448b5f59886102efa70584a597edcd672a0"
-dependencies = [
- "ahash",
- "getrandom 0.3.4",
- "hashbrown 0.15.5",
- "rayon",
- "regex",
- "serde",
- "serde_json",
- "smallvec",
- "thiserror",
-]
-
-[[package]]
 name = "mul-correlate"
 version = "0.1.0"
 dependencies = [
  "chrono",
  "hashbrown 0.15.5",
- "mul-core 0.1.0",
- "mul-io 0.1.0",
+ "mul-core",
+ "mul-io",
  "plist",
  "regex",
  "rusqlite",
@@ -723,7 +685,7 @@ dependencies = [
 name = "mul-export"
 version = "0.1.0"
 dependencies = [
- "mul-core 0.1.0",
+ "mul-core",
  "mul-correlate",
  "rusqlite",
  "serde",
@@ -736,10 +698,10 @@ name = "mul-ingest"
 version = "0.1.0"
 dependencies = [
  "flate2",
- "mul-apollo 0.1.0",
- "mul-core 0.1.0",
- "mul-io 0.1.0",
- "mul-unifiedlog 0.1.0",
+ "mul-apollo",
+ "mul-core",
+ "mul-io",
+ "mul-unifiedlog",
  "plist",
  "rusqlite",
  "serde",
@@ -758,19 +720,7 @@ version = "0.1.0"
 dependencies = [
  "flate2",
  "memmap2",
- "mul-core 0.1.0",
- "tempfile",
- "thiserror",
-]
-
-[[package]]
-name = "mul-io"
-version = "0.1.0"
-source = "git+https://github.com/IsMyPhonePwned/mac-unified-library#4a7f8448b5f59886102efa70584a597edcd672a0"
-dependencies = [
- "flate2",
- "memmap2",
- "mul-core 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
+ "mul-core",
  "tempfile",
  "thiserror",
 ]
@@ -780,9 +730,9 @@ name = "mul-python"
 version = "0.1.0"
 dependencies = [
  "mac-unified-library",
- "mul-apollo 0.1.0",
- "mul-core 0.1.0",
- "mul-unifiedlog 0.1.0",
+ "mul-apollo",
+ "mul-core",
+ "mul-unifiedlog",
  "pyo3",
  "serde",
  "serde_json",
@@ -796,27 +746,8 @@ dependencies = [
  "hashbrown 0.15.5",
  "lz4_flex",
  "memchr",
- "mul-core 0.1.0",
- "mul-io 0.1.0",
- "once_cell",
- "serde",
- "serde_json",
- "smallvec",
- "thiserror",
- "uuid",
-]
-
-[[package]]
-name = "mul-unifiedlog"
-version = "0.1.0"
-source = "git+https://github.com/IsMyPhonePwned/mac-unified-library#4a7f8448b5f59886102efa70584a597edcd672a0"
-dependencies = [
- "ahash",
- "hashbrown 0.15.5",
- "lz4_flex",
- "memchr",
- "mul-core 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
- "mul-io 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
+ "mul-core",
+ "mul-io",
  "once_cell",
  "serde",
  "serde_json",
@@ -833,7 +764,7 @@ dependencies = [
  "getrandom 0.3.4",
  "js-sys",
  "mac-unified-library",
- "mul-core 0.1.0",
+ "mul-core",
  "mul-correlate",
  "serde",
  "serde_json",
@@ -1246,9 +1177,9 @@ dependencies = [
  "erased-serde",
  "flate2",
  "memmap2",
- "mul-apollo 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
- "mul-core 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
- "mul-unifiedlog 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
+ "mul-apollo",
+ "mul-core",
+ "mul-unifiedlog",
  "plist",
  "rayon",
  "regex",
