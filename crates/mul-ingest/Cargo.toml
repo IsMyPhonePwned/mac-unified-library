@@ -26,3 +26,9 @@ smallvec = { workspace = true }
 uuid = { workspace = true }
 sysdiagnose_extractor_library = { workspace = true, optional = true }
 plist = { workspace = true }
+
+[dev-dependencies]
+flate2 = { workspace = true }
+rusqlite = { workspace = true }
+tempfile = { workspace = true }
+sysdiagnose_extractor_library = { workspace = true }

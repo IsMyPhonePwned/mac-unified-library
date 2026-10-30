@@ -13,7 +13,6 @@ parallel = ["mul-core/parallel"]
 
 [dependencies]
 mul-core = { workspace = true }
-mul-ingest = { workspace = true }
 mul-io = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

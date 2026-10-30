@@ -26,7 +26,7 @@ Global flags (any subcommand): `--threads N`, `--mem-budget BYTES`,
 | `mul-io` | Sources, gzip |
 | `mul-unifiedlog` | Clean-room Unified Log decoder |
 | `mul-apollo` | APOLLO-NG (247 converted TOML modules + SQLite / Biome) |
-| `mul-ingest` | Input discovery + `-ng` adapters |
+| `mul-ingest` | Input discovery + [`-ng`](https://github.com/IsMyPhonePwned/sysdiagnose-extractor-library-ng) adapters |
 | `mul-correlate` | Entities, analysers, overview |
 | `mul-export` | NDJSON / Markdown / JSON / HTML |
 | `mac-unified-library` | `Session` facade |
@@ -503,7 +503,20 @@ unified-log ingest unless the plan requests it, e.g. `network_iocs`). See
 
 ```bash
 cargo test --workspace --exclude mul-python --exclude mul-wasm
+
+# One fixture test per -ng parser / mul analyser (also run by
+# .github/workflows/parser-analyser.yml)
+cargo test -p mul-ingest --test each_parser
+cargo test -p mul-correlate --test each_analyser
+
+# wasm32 build + test compilation (no-run; same job in CI)
+cargo build -p mul-core --target wasm32-unknown-unknown --no-default-features
+cargo build -p mul-apollo --target wasm32-unknown-unknown --no-default-features --features biome
+cargo build -p mul-correlate --target wasm32-unknown-unknown --no-default-features
+cargo build -p mac-unified-library --target wasm32-unknown-unknown --no-default-features --features wasm
+cargo test -p mul-correlate --target wasm32-unknown-unknown --no-default-features --lib --tests --no-run
 ```
+
 
 ---
 

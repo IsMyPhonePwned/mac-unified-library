@@ -1,0 +1,44 @@
+name: parser-analyser
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  each-parser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Each parser fixture test
+        run: cargo test -p mul-ingest --test each_parser -- --nocapture
+
+  each-analyser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Each analyser fixture test
+        run: cargo test -p mul-correlate --test each_analyser -- --nocapture
+
+  wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Build wasm crates
+        run: |
+          cargo build -p mul-core --target wasm32-unknown-unknown --no-default-features
+          cargo build -p mul-unifiedlog --target wasm32-unknown-unknown --no-default-features
+          cargo build -p mul-apollo --target wasm32-unknown-unknown --no-default-features --features biome
+          cargo build -p mul-correlate --target wasm32-unknown-unknown --no-default-features
+          cargo build -p mac-unified-library --target wasm32-unknown-unknown --no-default-features --features wasm
+          cargo build -p mul-wasm --target wasm32-unknown-unknown --no-default-features --features wasm
+      - name: Compile unit tests for wasm (no-run)
+        run: |
+          cargo test -p mul-core --target wasm32-unknown-unknown --no-default-features --lib --no-run
+          cargo test -p mul-unifiedlog --target wasm32-unknown-unknown --no-default-features --lib --no-run
+          cargo test -p mul-apollo --target wasm32-unknown-unknown --no-default-features --features biome --lib --no-run
+          cargo test -p mul-correlate --target wasm32-unknown-unknown --no-default-features --lib --tests --no-run

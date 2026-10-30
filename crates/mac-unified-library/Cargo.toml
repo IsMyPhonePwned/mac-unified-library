@@ -24,6 +24,7 @@ arrow = ["mul-export/arrow"]
 parquet = ["mul-export/parquet"]
 export-sqlite = ["mul-export/sqlite"]
 live = ["mul-ingest/live"]
+# Browser / wasm32 builds: keep `-ng` (native archive extractors) off.
 wasm = []
 
 [dependencies]
