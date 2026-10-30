@@ -560,13 +560,13 @@ dependencies = [
 name = "mac-unified-library"
 version = "0.1.0"
 dependencies = [
- "mul-apollo",
- "mul-core",
+ "mul-apollo 0.1.0",
+ "mul-core 0.1.0",
  "mul-correlate",
  "mul-export",
  "mul-ingest",
- "mul-io",
- "mul-unifiedlog",
+ "mul-io 0.1.0",
+ "mul-unifiedlog 0.1.0",
  "plist",
  "serde",
  "serde_json",
@@ -616,9 +616,31 @@ dependencies = [
  "chrono",
  "flate2",
  "hashbrown 0.15.5",
- "mul-core",
- "mul-io",
- "mul-unifiedlog",
+ "mul-core 0.1.0",
+ "mul-io 0.1.0",
+ "mul-unifiedlog 0.1.0",
+ "once_cell",
+ "regex",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "smallvec",
+ "tempfile",
+ "thiserror",
+ "toml",
+]
+
+[[package]]
+name = "mul-apollo"
+version = "0.1.0"
+source = "git+https://github.com/IsMyPhonePwned/mac-unified-library#4a7f8448b5f59886102efa70584a597edcd672a0"
+dependencies = [
+ "ahash",
+ "chrono",
+ "flate2",
+ "hashbrown 0.15.5",
+ "mul-core 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
+ "mul-io 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
  "once_cell",
  "regex",
  "rusqlite",
@@ -637,10 +659,10 @@ dependencies = [
  "anyhow",
  "clap",
  "mac-unified-library",
- "mul-apollo",
- "mul-core",
+ "mul-apollo 0.1.0",
+ "mul-core 0.1.0",
  "mul-export",
- "mul-unifiedlog",
+ "mul-unifiedlog 0.1.0",
  "serde_json",
  "tracing",
  "tracing-subscriber",
@@ -662,13 +684,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "mul-core"
+version = "0.1.0"
+source = "git+https://github.com/IsMyPhonePwned/mac-unified-library#4a7f8448b5f59886102efa70584a597edcd672a0"
+dependencies = [
+ "ahash",
+ "getrandom 0.3.4",
+ "hashbrown 0.15.5",
+ "rayon",
+ "regex",
+ "serde",
+ "serde_json",
+ "smallvec",
+ "thiserror",
+]
+
+[[package]]
 name = "mul-correlate"
 version = "0.1.0"
 dependencies = [
  "chrono",
  "hashbrown 0.15.5",
- "mul-core",
- "mul-io",
+ "mul-core 0.1.0",
+ "mul-io 0.1.0",
  "plist",
  "regex",
  "rusqlite",
@@ -685,7 +723,7 @@ dependencies = [
 name = "mul-export"
 version = "0.1.0"
 dependencies = [
- "mul-core",
+ "mul-core 0.1.0",
  "mul-correlate",
  "rusqlite",
  "serde",
@@ -698,10 +736,10 @@ name = "mul-ingest"
 version = "0.1.0"
 dependencies = [
  "flate2",
- "mul-apollo",
- "mul-core",
- "mul-io",
- "mul-unifiedlog",
+ "mul-apollo 0.1.0",
+ "mul-core 0.1.0",
+ "mul-io 0.1.0",
+ "mul-unifiedlog 0.1.0",
  "plist",
  "rusqlite",
  "serde",
@@ -720,7 +758,19 @@ version = "0.1.0"
 dependencies = [
  "flate2",
  "memmap2",
- "mul-core",
+ "mul-core 0.1.0",
+ "tempfile",
+ "thiserror",
+]
+
+[[package]]
+name = "mul-io"
+version = "0.1.0"
+source = "git+https://github.com/IsMyPhonePwned/mac-unified-library#4a7f8448b5f59886102efa70584a597edcd672a0"
+dependencies = [
+ "flate2",
+ "memmap2",
+ "mul-core 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
  "tempfile",
  "thiserror",
 ]
@@ -730,9 +780,9 @@ name = "mul-python"
 version = "0.1.0"
 dependencies = [
  "mac-unified-library",
- "mul-apollo",
- "mul-core",
- "mul-unifiedlog",
+ "mul-apollo 0.1.0",
+ "mul-core 0.1.0",
+ "mul-unifiedlog 0.1.0",
  "pyo3",
  "serde",
  "serde_json",
@@ -746,8 +796,27 @@ dependencies = [
  "hashbrown 0.15.5",
  "lz4_flex",
  "memchr",
- "mul-core",
- "mul-io",
+ "mul-core 0.1.0",
+ "mul-io 0.1.0",
+ "once_cell",
+ "serde",
+ "serde_json",
+ "smallvec",
+ "thiserror",
+ "uuid",
+]
+
+[[package]]
+name = "mul-unifiedlog"
+version = "0.1.0"
+source = "git+https://github.com/IsMyPhonePwned/mac-unified-library#4a7f8448b5f59886102efa70584a597edcd672a0"
+dependencies = [
+ "ahash",
+ "hashbrown 0.15.5",
+ "lz4_flex",
+ "memchr",
+ "mul-core 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
+ "mul-io 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
  "once_cell",
  "serde",
  "serde_json",
@@ -764,7 +833,7 @@ dependencies = [
  "getrandom 0.3.4",
  "js-sys",
  "mac-unified-library",
- "mul-core",
+ "mul-core 0.1.0",
  "mul-correlate",
  "serde",
  "serde_json",
@@ -1169,6 +1238,7 @@ dependencies = [
 [[package]]
 name = "sysdiagnose_extractor_library"
 version = "0.1.0"
+source = "git+https://github.com/IsMyPhonePwned/sysdiagnose-extractor-library-ng#54cb28f95879bde57bb3109fcab81b1a9d9ac8c4"
 dependencies = [
  "base64 0.22.1",
  "chrono",
@@ -1176,9 +1246,9 @@ dependencies = [
  "erased-serde",
  "flate2",
  "memmap2",
- "mul-apollo",
- "mul-core",
- "mul-unifiedlog",
+ "mul-apollo 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
+ "mul-core 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
+ "mul-unifiedlog 0.1.0 (git+https://github.com/IsMyPhonePwned/mac-unified-library)",
  "plist",
  "rayon",
  "regex",
