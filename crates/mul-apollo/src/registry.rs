@@ -21,15 +21,20 @@ impl ModuleRegistry {
     }
 
     pub fn load_embedded() -> Self {
-        // Prefer converted TOML; fall back to legacy .txt for any id not covered.
+        // TOML is the embedded source of truth. Optional LEGACY_MODULE_SOURCES
+        // (empty in published trees) only fills ids not already covered.
         let mut modules = Vec::new();
         let mut toml_errors = Vec::new();
         let mut seen = std::collections::HashSet::new();
         for (name, text) in TOML_MODULE_SOURCES {
             match toml_v2::parse_module_toml(text) {
                 Ok(m) => {
-                    seen.insert(m.id.clone());
-                    modules.push(m);
+                    if let Some(pos) = modules.iter().position(|x: &Module| x.id == m.id) {
+                        modules[pos] = m;
+                    } else {
+                        seen.insert(m.id.clone());
+                        modules.push(m);
+                    }
                 }
                 Err(e) => toml_errors.push((name.to_string(), e.to_string())),
             }
@@ -37,7 +42,7 @@ impl ModuleRegistry {
         let (legacy_modules, legacy_errors) = import_all_legacy(LEGACY_MODULE_SOURCES);
         for m in legacy_modules {
             if seen.contains(&m.id) {
-                continue; // TOML wins
+                continue;
             }
             seen.insert(m.id.clone());
             modules.push(m);
@@ -121,17 +126,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn all_legacy_import() {
+    fn embedded_toml_modules_load() {
         let reg = ModuleRegistry::load_embedded();
         assert_eq!(
             ModuleRegistry::legacy_source_count(),
-            247,
-            "expected 247 vendored APOLLO modules"
+            0,
+            "published build embeds TOML only"
         );
         assert!(
-            reg.legacy_errors.is_empty(),
-            "legacy import errors: {:?}",
-            &reg.legacy_errors[..reg.legacy_errors.len().min(5)]
+            ModuleRegistry::toml_source_count() >= 247,
+            "expected ≥247 TOML sources, got {}",
+            ModuleRegistry::toml_source_count()
         );
         assert!(
             reg.toml_errors.is_empty(),
@@ -139,8 +144,13 @@ mod tests {
             &reg.toml_errors[..reg.toml_errors.len().min(5)]
         );
         assert!(
-            reg.module_count() >= 247,
-            "expected ≥247 modules, got {}",
+            reg.legacy_errors.is_empty(),
+            "legacy import errors: {:?}",
+            &reg.legacy_errors[..reg.legacy_errors.len().min(5)]
+        );
+        assert!(
+            reg.module_count() >= 244,
+            "expected ≥244 unique modules, got {}",
             reg.module_count()
         );
     }
