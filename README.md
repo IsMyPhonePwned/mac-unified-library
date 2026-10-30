@@ -1,7 +1,7 @@
 # mac-unified-library
 
 Rust workspace for Apple Unified Logs, APOLLO-NG pattern-of-life, sysdiagnose
-correlation, and a system overview. See [SPEC.md](SPEC.md).
+correlation, and a system overview.
 
 Build the CLI once, then use the examples below (replace paths with your archive
 or `.logarchive`):
@@ -234,8 +234,6 @@ $MUL overview "$SD" --format json -o overview.json
 $MUL overview "$SD" --format html -o overview.html
 $MUL overview "$SD" --format md -o overview.md
 ```
-
-Schema notes: [docs/OVERVIEW_SCHEMA.md](docs/OVERVIEW_SCHEMA.md).
 
 ### Timeline (`timeline`)
 
@@ -496,8 +494,7 @@ cargo build --release -p mul-cli
 ```
 
 `mul parse` / `mul analyse` use tight retention / per-analyser plans (no
-unified-log ingest unless the plan requests it, e.g. `network_iocs`). See
-[docs/BENCHMARKS.md](docs/BENCHMARKS.md) and [docs/NG_INTEGRATION.md](docs/NG_INTEGRATION.md).
+unified-log ingest unless the plan requests it, e.g. `network_iocs`).
 
 ### Tests
 
